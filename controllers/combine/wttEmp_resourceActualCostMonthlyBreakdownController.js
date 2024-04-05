@@ -4,6 +4,7 @@ const wttEmployeeController = require('../database2/wttEmployeeController');
 const resourceCostActualBreakdownByMonthController = require('../database1/resourceCostActualBreakdownByMonthController');
 const { WTT_ProjectResources } = require('../../models/database2/wtt_projectresources');
 const { WTT_Employee } = require('../../models/database2/wtt_employee');
+const { Op } = require('sequelize');
 
 const getAllResourceCostWithNames = async (req, res) => {
   const { projectId } = req.params;
@@ -12,6 +13,10 @@ const getAllResourceCostWithNames = async (req, res) => {
     const employees = await WTT_ProjectResources.findAll({
       where: {
         FK_WTT_Project_ID: projectId,
+        isActive: 'true', 
+        endDate: {
+          [Op.gte]: new Date() // This checks if endDate is greater than or equal to the current date
+        }
       },
       include: [
         {
