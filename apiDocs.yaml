@@ -1,0 +1,339 @@
+swagger: "2.0"
+info:
+  title: DDO Finance Forecast
+  version: 1.0.0
+basePath: /
+schemes:
+  - http
+  - https
+securityDefinitions:
+  BearerAuth:
+    type: apiKey
+    name: Authorization
+    in: header
+    description: Use Bearer token for authentication
+tags:
+  - name: login
+    description: Authentication Endpoints
+  - name: dashboard
+    description: Dashboard screen endpoints are there.
+  - name: project
+    description: project screen endpoints are there.
+  - name: projectDashboard
+    description: It's dashboard editing screen in which we are editing all the fields and updating it.
+  - name: resource
+    description: resource screen endpoints are there.
+  - name: resourceCost
+    description: resourceCost screen endpoints are there.
+  - name: default
+    description: These are the endpoint which are not used in screen but implemented for backend api collection
+security:
+  - BearerAuth: []
+paths:
+  /login:
+    post:
+      tags:
+        - login
+      summary: User login
+      description: Login with username and password to obtain an access token. and when you get a token you have to add that token on above "Authorize" button with "Bearer token". 
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: credentials
+          description: User credentials
+          required: true
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+      responses:
+        200:
+          description: Token obtained successfully
+  /currency:
+    get:
+      summary: Get all currencies
+      description: Retrieve a list of all currencies.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful operation
+  /paymentterm:
+    get:
+      summary: Get all payment terms
+      description: Retrieve a list of all payment terms.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful operation
+  /project:
+    get:
+      tags:
+        - dashboard
+      summary: Get all projects
+      description: Retrieve a list of all projects with id and name.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful operation
+  /projectcost:
+    get:
+      tags:
+        - project
+      summary: Get all project costs
+      description: Retrieve a list of all project costs with clientName,projectName,status,etc.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful operation
+  /expenseCategories:
+    get:
+      summary: Get Expense Category Subcategory
+      tags:
+        - projectDashboard
+      operationId: getExpenseCategorySubcategory
+      responses:
+        '200':
+          description: Successful response
+  /expenseCategories:
+    post:
+      summary: Post Expense Category Subcategory
+      tags:
+        - projectDashboard
+      operationId: postExpenseCategorySubcategory
+      responses:
+        '201':
+          description: Resource created successfully
+  /forecastedRevenueBreakdownByMonth:
+    get:
+      summary: Get Forecasted Revenue Breakdown By Month
+      tags:
+        - projectDashboard
+      operationId: forecastedRevenueBreakdownByMonth
+      responses:
+        '200':
+          description: Successful response
+  /actualRevenueBreakdownByMonth:
+    get:
+      summary: Get Actual Revenue Breakdown By Month
+      tags:
+        - projectDashboard
+      operationId: actualRevenueBreakdownByMonth
+      responses:
+        '200':
+          description: Successful response
+  /forecastedCollectionBreakdownByMonth:
+    get:
+      summary: Get Forecasted Collection Breakdown By Month
+      tags:
+        - projectDashboard
+      operationId: forecastedCollectionBreakdownByMonth
+      responses:
+        '200':
+          description: Successful response
+  /actualCollectionBreakdownByMonth:
+    get:
+      summary: Get Actual Collection Breakdown By Month
+      tags:
+        - projectDashboard
+      operationId: actualCollectionBreakdownByMonth
+      responses:
+        '200':
+          description: Successful response
+  /resourceCostActualBreakdownByMonth/project:
+    get:
+      summary: Get Resource Cost Actual Breakdown By Month (Project)
+      tags:
+        - projectDashboard
+      operationId: resourceCostActualBreakdownByMonth
+      responses:
+        '200':
+          description: Successful response
+  /financialyear:
+    get:
+      tags:
+        - dashboard
+      summary: Get all financial years
+      description: Retrieve a list of all financial years.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful operation
+  /city:
+    get:
+      summary: Get all cities
+      description: Retrieve a list of all cities.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful operation
+    post:
+      summary: Create a new city
+      description: Create a new city with the provided data.
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: body
+          name: city
+          description: City object
+          required: true
+          schema:
+            $ref: "#/definitions/City"
+      responses:
+        200:
+          description: City created successfully
+  /businessunit:
+    get:
+      tags:
+        - dashboard
+      summary: Get all business units
+      description: Retrieve a list of all business units.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful operation
+  /customer:
+    get:
+      tags:
+        - dashboard
+      summary: Get all customers
+      description: Retrieve a list of all customers.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful operation
+  /designation:
+    get:
+      summary: Get all designations
+      description: Retrieve a list of all designations.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful operation
+    post:
+      summary: Create a new designation
+      description: Create a new designation with the provided data.
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: body
+          name: designation
+          description: Designation object
+          required: true
+          schema:
+            $ref: "#/definitions/Designation"
+      responses:
+        200:
+          description: Designation created successfully
+  /employee:
+    get:
+      summary: Get all employees
+      description: Retrieve a list of all employees.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful operation
+    post:
+      summary: Create a new employee
+      description: Create a new employee with the provided data.
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: body
+          name: employee
+          description: Employee object
+          required: true
+          schema:
+            $ref: "#/definitions/Employee"
+      responses:
+        200:
+          description: Employee created successfully
+  /projectresourcescost:
+    get:
+      tags:
+        - resource
+      summary: Get all project resources
+      description: Retrieve a list of all project resources.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful operation
+  /resourcecost:
+    get:
+      tags:
+        - resourceCost
+      summary: Get Resource Costs
+      description: Retrieve a list of resource costs
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Successful response
+  /resourcecost/{id}:
+    put:
+      tags:
+        - resourceCost
+      summary: Update Resource Cost
+      description: Update an existing resource cost
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the resource cost to update
+        - name: id
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              FK_WTT_Employee_ID:
+                type: integer
+              monthlyCostComp1:
+                type: integer
+              monthlyCostComp2:
+                type: integer 
+              monthlyCostComp3:
+                type: integer 
+              monthlyCostComp4:
+                type: integer 
+      responses:
+        '200':
+          description: Resource cost updated successfully
+          content:
+            application/json:
+              example:
+                message: Resource cost updated successfully
+        '401':
+          description: Unauthorized - Bearer token is missing or invalid
+          content:
+            application/json:
+              example:
+                message: Unauthorized - Bearer token is missing or invalid
+        '404':
+          description: Resource cost not found
+          content:
+            application/json:
+              example:
+                message: Resource cost not found
