@@ -37,14 +37,14 @@ const getAllAllocatedResourceCost = async (req, res) => {
               const weekendDays = ['Saturday', 'Sunday'];
               const dailyCost = calculatePerDayWages(totalMonthlyCost, weekendDays);
               const allocatedCost = dailyCost*allocatedDays;
-              //console.log('Monthly Cost: ', totalMonthlyCost);
-              //console.log('Daily Cost: ', dailyCost);
+              //('Monthly Cost: ', totalMonthlyCost);
+              //('Daily Cost: ', dailyCost);
 
               // Example usage:
               const startDate = new Date('2023-11-01');
               const endDate = new Date('2023-11-15');
               const percentage = calculatePercentageDays(ar.startDate, ar.endDate);
-              console.log(`Percentage of days between ${ar.startDate.toDateString()} and ${ar.endDate.toDateString()}: ${percentage.toFixed(2)}%`);
+              (`Percentage of days between ${ar.startDate.toDateString()} and ${ar.endDate.toDateString()}: ${percentage.toFixed(2)}%`);
 
               
               return {

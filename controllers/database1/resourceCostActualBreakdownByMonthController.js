@@ -44,11 +44,11 @@ const getRecordByProjectId = async (projectId) => {
     });
     
     if (!record || record.length === 0) {
-      console.log('Record not found');
+      ('Record not found');
     } else {
-      // console.log('Records: ', record);
+      // ('Records: ', record);
       // const formattedRecord = formatResourceCostRecord(record);
-      // console.log(formattedRecord);
+      // (formattedRecord);
       return record;
 
     }
@@ -60,7 +60,7 @@ const getRecordByProjectId = async (projectId) => {
 const getResourceCostByEmployeeId = async (req, res) => {
   try {
     const resourceCost = await ResourceCostActualBreakdownByMonth.findOne({where: {FK_WTT_Employee_ID: req.params.id}});
-    // console.log('res: ',resourceCost);
+    // ('res: ',resourceCost);
     if (!resourceCost) {
       return res.status(404).json({ error: 'ResourceCost not found' });
     }

@@ -1,5 +1,6 @@
 const { DataTypes, Sequelize } = require('sequelize');
 const { sequelize2 } = require('../../config/db');
+const { WTT_Employee } = require('./wtt_employee');
 
 const WTT_ProjectResources = sequelize2.define('WTT_ProjectResources', {
     createdAt: DataTypes.DATE,
@@ -8,7 +9,7 @@ const WTT_ProjectResources = sequelize2.define('WTT_ProjectResources', {
     createdById: DataTypes.BIGINT,
     updatedById: DataTypes.BIGINT,
     FK_WTT_Project_ID: DataTypes.BIGINT,
-    FK_WTT_Employee_ID: DataTypes.BIGINT,
+    FK_WTT_Employee_ID: {type: DataTypes.BIGINT, references: WTT_Employee},
     startDate: DataTypes.DATE,
     endDate: DataTypes.DATE,
     allocPercent: DataTypes.BIGINT,
@@ -25,7 +26,7 @@ const WTT_ProjectResources = sequelize2.define('WTT_ProjectResources', {
   });
 
   // Define any associations or additional configurations here
-
+  WTT_ProjectResources.belongsTo(WTT_Employee, { foreignKey: 'FK_WTT_Employee_ID', as: 'Employee' });
 module.exports = {
     WTT_ProjectResources, // Export the model
     sequelize2, // Export the instance

@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 // const { User } = require('../models/index');
 const { User } = require('../models/database1/user');
 
-console.log('User - ', User);
+('User - ', User);
 
 passport.use(
   new LocalStrategy(async (username, password, done) => {
@@ -19,13 +19,13 @@ passport.use(
       if (!bcrypt.compareSync(password, user.password)) {
         return done(null, false, { message: 'Incorrect password.' });
       }
-      // console.log('hello:-',user.id);
+      // ('hello:-',user.id);
       // const newPassword = 'Admin@54321'; // New password
       // const success = await changePassword(user.id, newPassword);
       // if (success) {
-      //   console.log('Password updated successfully.');
+      //   ('Password updated successfully.');
       // } else {
-      //   console.log('Failed to update password.');
+      //   ('Failed to update password.');
       // }
 
       return done(null, user);

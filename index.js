@@ -39,7 +39,7 @@ app.use("/api-docs", swaggerServe, swaggerSetup);
 
 sequelize.sync() // Synchronize models with the database
   .then(() => {
-    console.log('Database synchronization complete.');
+    ('Database synchronization complete.');
   })
   .catch((err) => {
     console.error('Error synchronizing database:', err);
@@ -47,7 +47,7 @@ sequelize.sync() // Synchronize models with the database
 
 sequelize2.sync() // Synchronize models with the remote database
   .then(() => {
-    console.log('Remote Database synchronization complete.');
+    ('Remote Database synchronization complete.');
   })
   .catch((err) => {
     console.error('Remote Error synchronizing database:', err);
@@ -85,10 +85,10 @@ app.use('/actualAndForecastedResource', actualAndForecastedResource);
 
 
 app.listen(port, async () => {
-  console.log(`Server is running on port ${port}`);
+  (`Server is running on port ${port}`);
   try {
     await sequelize.authenticate();
-    console.log('Database connection has been established successfully.');
+    ('Database connection has been established successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }

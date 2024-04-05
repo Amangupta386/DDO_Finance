@@ -24,8 +24,8 @@ const sumOfMonthToActualResources = async (req, res) => {
       parseInt(resource["monthlyCostComp2"]) +
       parseInt(resource["monthlyCostComp3"]) +
       parseInt(resource["monthlyCostComp4"]);
-    // console.log('totalValue: ',totalValue);
-    // console.log("resourceCost: ", resourceCostBreakdown);
+    // ('totalValue: ',totalValue);
+    // ("resourceCost: ", resourceCostBreakdown);
     let combinedData;
     const employeeCode = employees?.find(
       (emp) => emp["id"] === resourceCostBreakdown["FK_WTT_Employee_ID"]
@@ -123,8 +123,8 @@ const sumOfMonthToForecastedResources = async (req, res) => {
       parseInt(resource["monthlyCostComp2"]) +
       parseInt(resource["monthlyCostComp3"]) +
       parseInt(resource["monthlyCostComp4"]);
-    // console.log('totalValue: ',totalValue);
-    // console.log("resourceCost: ", resourceCostBreakdown);
+    // ('totalValue: ',totalValue);
+    // ("resourceCost: ", resourceCostBreakdown);
     let combinedData;
     const employeeCode = employees?.find(
       (emp) => emp["id"] === resourceCostBreakdown["FK_WTT_Employee_ID"]
@@ -206,7 +206,7 @@ const sumOfMonthToForecastedResources = async (req, res) => {
 
     // if(resourceCostBreakdown){
   } catch (error) {
-    console.log('forecasted Error',error);
+    ('forecasted Error',error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };

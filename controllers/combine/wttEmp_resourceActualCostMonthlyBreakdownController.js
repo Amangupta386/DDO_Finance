@@ -2,21 +2,36 @@ const moment = require('moment');
 
 const wttEmployeeController = require('../database2/wttEmployeeController');
 const resourceCostActualBreakdownByMonthController = require('../database1/resourceCostActualBreakdownByMonthController');
+const { WTT_ProjectResources } = require('../../models/database2/wtt_projectresources');
+const { WTT_Employee } = require('../../models/database2/wtt_employee');
 
 const getAllResourceCostWithNames = async (req, res) => {
   const { projectId } = req.params;
 
   try {
-    const employees = await wttEmployeeController.getAllEmployees2();
+    const employees = await WTT_ProjectResources.findAll({
+      where: {
+        FK_WTT_Project_ID: projectId,
+      },
+      include: [
+        {
+          model: WTT_Employee, // Assuming WTT_Employee is the name of the Employee table
+          as: 'Employee', // Adjust this according to the actual association alias in your Sequelize model
+        }
+      ]
+    });
+
     const resourceCostActual = await resourceCostActualBreakdownByMonthController.getRecordByProjectId(projectId);
-    console.log(resourceCostActual, "Data employees:");
-    const combinedData = employees?.map((employee) => {
+    (resourceCostActual, "Data employees:");
+    (employees, "employees: d");
+    const combinedData = employees?.map((empD) => {
+       const employee = empD.dataValues.Employee;
       // Find the associated employee
       const rc = resourceCostActual?.find((rc) => employee.dataValues.id === rc.FK_WTT_Employee_ID);
      
       // Log the values after defining the 'employee' variable
-      // console.log('employee.dataValues.id:', employee ? employee.dataValues.id : 'N/A');
-      // console.log('rc.FK_WTT_Employee_ID:', rc.FK_WTT_Employee_ID);
+      // ('employee.dataValues.id:', employee ? employee.dataValues.id : 'N/A');
+      // ('rc.FK_WTT_Employee_ID:', rc.FK_WTT_Employee_ID);
 
       // Assume joiningDate is a Date object
       const formattedJoiningDate = employee ? moment(employee.dataValues.JoiningDate).format('DD/MM/YYYY') : 'N/A';

@@ -24,7 +24,7 @@ const getAllProjects = async (req, res) => {
 const getProjectById = async (req, res) => {
   try {
     const project = await Project.findByPk(req.params.id);
-    console.log('Console Log Proj: ', project);
+    ('Console Log Proj: ', project);
     if (!project) {
       return res.status(404).json({ message: 'Project not found' });
     }
