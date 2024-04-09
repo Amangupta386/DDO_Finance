@@ -44,7 +44,13 @@ const getAllProjectResources = async (req, res) => {
 // Get a list of all project resources
 const getAllAllocatedResources = async (req, res) => {
   try {
-    const projectResources = await WTT_ProjectResources.findAll();
+    const projectResources = await WTT_ProjectResources.findAll({
+      where:{
+        endDate: {
+          [Op.gte]: new Date() // This checks if endDate is greater than or equal to the current date
+        }
+      }
+    });
     // Extract the dataValues and convert to a plain array
     const plainArray = projectResources.map(pr => pr.dataValues);
     return plainArray;

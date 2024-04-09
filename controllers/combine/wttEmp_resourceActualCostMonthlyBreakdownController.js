@@ -14,9 +14,9 @@ const getAllResourceCostWithNames = async (req, res) => {
       where: {
         FK_WTT_Project_ID: projectId,
         isActive: 'true', 
-        endDate: {
-          [Op.gte]: new Date() // This checks if endDate is greater than or equal to the current date
-        }
+        // endDate: {
+        //   [Op.gte]: new Date() // This checks if endDate is greater than or equal to the current date
+        // }
       },
       include: [
         {
