@@ -15,7 +15,8 @@ router.route('/:id')
   .delete(resourceCostActualBreakdownByMonthController.deleteRecord);
 
 router.route('/project/:projectId')
-  .get(wttEmp_resourceCostActualBreakdownController.getAllResourceCostWithNames);
+  .get(wttEmp_resourceCostActualBreakdownController.getAllResourceCostWithNames)
+  .post(wttEmp_resourceCostActualBreakdownController.updateAllResourceCostWithNames);
 
 
 module.exports = router;

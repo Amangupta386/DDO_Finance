@@ -114,7 +114,41 @@ const getAllResourceCostWithNames = async (req, res) => {
     return res.status(500).json({ error: 'Server Error' });
   }
 };
+const updateAllResourceCostWithNames = async (req, res) => {
+  const { projectId } = req.params;
+
+  try {
+    // const employees = await WTT_ProjectResources.findAll({
+    //   where: {
+    //     FK_WTT_Project_ID: projectId,
+    //     isActive: 'true', 
+
+    //     // endDate: {
+    //     //   [Op.gte]: new Date() // This checks if endDate is greater than or equal to the current date
+    //     // }
+    //   },
+    //   include: [
+    //     {
+    //       model: WTT_Employee, // Assuming WTT_Employee is the name of the Employee table
+    //       as: 'Employee', // Adjust this according to the actual association alias in your Sequelize model
+    //     }
+    //   ]
+    // });
+
+    const resourceCostActual = await resourceCostActualBreakdownByMonthController.getRecordByProjectId(projectId);
+    if(resourceCostActual) {
+      return res.json(resourceCostActual);
+    } else {
+      return res.json("Record not found");
+    }
+
+  } catch (error) {
+    const newRec = await resourceCostActualBreakdownByMonthController.createRecord(req,res);
+    return res.status(500).json({ error: 'Server Error' });
+  }
+};
 
 module.exports = {
   getAllResourceCostWithNames,
+  updateAllResourceCostWithNames
 };

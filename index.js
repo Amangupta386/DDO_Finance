@@ -26,6 +26,8 @@ const resourceCostActualBreakdownByMonthRoutes = require('./routes/resourceCostA
 const actualCollectionBreakdownByMonthRoutes = require('./routes/actualCollectionBreakdownByMonthRoutes');
 const actualRevenueBreakdownByMonthRoutes = require('./routes/actualRevenueBreakdownByMonthRoutes');
 const actualAndForecastedResource = require('./routes/resourceCostActualAndForecasted');
+const otherExpensesBreakdownByMonthRoutes = require('./routes/otherExpensesBreakdownByMonthRoutes');
+
 const { swaggerServe, swaggerSetup } = require("./apiDocs.js");
 
 
@@ -81,6 +83,8 @@ app.use('/resourceCostActualBreakdownByMonth', resourceCostActualBreakdownByMont
 app.use('/actualCollectionBreakdownByMonth', actualCollectionBreakdownByMonthRoutes);
 app.use('/actualRevenueBreakdownByMonth', actualRevenueBreakdownByMonthRoutes);
 app.use('/actualAndForecastedResource', actualAndForecastedResource);
+app.use('/otherExpensesBreakdownByMonth', otherExpensesBreakdownByMonthRoutes);
+
 
 
 
