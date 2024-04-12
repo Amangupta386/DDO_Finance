@@ -10,23 +10,16 @@ const OtherExpensesActualBreakdownByMonth = sequelize.define(
       autoIncrement: true,
     },
     createdAt: DataTypes.DATE,
-
     updatedAt: DataTypes.DATE,
-
     sort: DataTypes.BIGINT,
-
     createdById: DataTypes.BIGINT,
-
     updatedById: DataTypes.BIGINT,
-
     FK_FinancialYear_ID: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
     FK_WTT_Project_ID: DataTypes.BIGINT,
-
     FK_ExpenseCategory_ID: DataTypes.BIGINT,
-
     april: {
       type: DataTypes.BIGINT,
       allowNull: false,
@@ -135,11 +128,11 @@ const OtherExpensesActualBreakdownByMonth = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    parentId: DataTypes.INTEGER, // Add parentId field
   },
   {
     tableName: 'OtherExpensesActualBreakdownByMonth',
     timestamps: false,
-
   }
 );
 
