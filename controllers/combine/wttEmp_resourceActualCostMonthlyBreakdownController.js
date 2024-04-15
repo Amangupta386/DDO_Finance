@@ -52,22 +52,22 @@ const getAllResourceCostWithProjectId = async (req, res) => {
     (resourceCostActual, "Data employees:");
     (employees, "employees: d");
     const combinedData = employees?.map((empD) => {
-       const employee = empD.dataValues.Employee;
+       const employee = empD.Employee;
       // Find the associated employee
-      const rc = resourceCostActual?.find((rc) => employee.dataValues.id === rc.FK_WTT_Employee_ID);
+      const rc = resourceCostActual?.find((rc) => employee.id === rc.FK_WTT_Employee_ID);
      
       // Log the values after defining the 'employee' variable
       // ('employee.dataValues.id:', employee ? employee.dataValues.id : 'N/A');
       // ('rc.FK_WTT_Employee_ID:', rc.FK_WTT_Employee_ID);
 
       // Assume joiningDate is a Date object
-      const formattedJoiningDate = employee ? moment(employee.dataValues.JoiningDate).format('DD/MM/YYYY') : 'N/A';
+      const formattedJoiningDate = employee ? moment(employee.JoiningDate).format('DD/MM/YYYY') : 'N/A';
 
       if (employee) {
         return {
           id: rc.dataValues.id || undefined,
-          employeeCode: employee.dataValues.EmployeeCode,
-          employeeName: employee.dataValues.FullName,
+          employeeCode: employee.EmployeeCode,
+          employeeName: employee.FullName,
           // Additional properties
           joiningDate: formattedJoiningDate,
           FK_WTT_Employee_ID: rc?.FK_WTT_Employee_ID || 'N/A',
