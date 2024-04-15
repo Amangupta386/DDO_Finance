@@ -168,7 +168,10 @@ const updateAllResourceCostWithProjectId = async (req, res) => {
       inputObj[data.label.toLowerCase()+'Comment'] = data.commentValue;
     });
 
-    res.send(inputObj);
+    await ResourceCostActualBreakdownByMonth.create(inputObj);
+    res.send({
+      message:"Record Updated"
+    });
       return; 
     }
     req.body.monthValues.forEach((data)=>{
@@ -179,7 +182,10 @@ const updateAllResourceCostWithProjectId = async (req, res) => {
 
     rec.save();
     if(resourceCostActual) {
-      return res.json(resourceCostActual);
+      res.send({
+        message:"Record Updated"
+      });
+      return
     } else {
       return res.json("Record not found");
     }
