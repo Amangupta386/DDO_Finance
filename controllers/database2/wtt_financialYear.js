@@ -1,11 +1,12 @@
 const { Op } = require("sequelize");
 const { WTT_FinancialYear } = require("../../models/database2/wtt_financialYear")
 
-exports.getAllFinacialYears =  async ()=>{
-    return await WTT_FinancialYear.findAll();
+exports.getAllFinacialYears =  async (req, res)=>{
+    res.send( await WTT_FinancialYear.findAll());
 }
 
-exports.getFinacialYearId = async (startYear, endYear)=>{
+exports.getFinacialYearId = async (req,res)=>{
+    const {startYear, endYear} = req.body;
     const date1 = new Date(); 
     date1.setDate(2); 
     date1.setMonth(3); 
@@ -14,7 +15,7 @@ exports.getFinacialYearId = async (startYear, endYear)=>{
     date2.setDate(30); 
     date2.setMonth(2); 
     date2.setFullYear(endYear);
-    return await WTT_FinancialYear.findOne({
+    res.send(await WTT_FinancialYear.findOne({
         where:{
            startDate:{
             [Op.gte]:date1
@@ -23,5 +24,5 @@ exports.getFinacialYearId = async (startYear, endYear)=>{
             [Op.lte]:date2
            }
         }
-    })
+    }));
 }

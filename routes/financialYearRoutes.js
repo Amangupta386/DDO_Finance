@@ -1,13 +1,13 @@
 // routes/items.js
 const express = require('express');
+const { getAllFinacialYears } = require('../controllers/database2/wtt_financialYear');
 const router = express.Router();
-// const projectController = require('../controllers/project');
-const financialYearController = require('../controllers/database2/wtt_financialYear');
+
 
 
 router.route('/')
     // Update a project
-    .get(financialYearController.getAllFinacialYears);
+    .get(getAllFinacialYears);
 
 // router.route('/:id')
 //     // Read one project by ID    
