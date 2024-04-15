@@ -3,13 +3,13 @@ const { OtherExpensesActualBreakdownByMonth } = require('../../models/database1/
 
 const getOtherExpenses = async (req, res) => {
   try {
-    const { FK_FinancialYear_ID, FK_WTT_Project_ID} = req.query;
+    const { financialYearId, projectId} = req.query;
 
     // Retrieve expenses from the database
     const expenses = await OtherExpensesActualBreakdownByMonth.findAll({
       where: {
-        FK_FinancialYear_ID,
-        FK_WTT_Project_ID,
+        FK_FinancialYear_ID: financialYearId,
+        FK_WTT_Project_ID:projectId,
        
       }
     });
