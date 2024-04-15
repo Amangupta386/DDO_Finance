@@ -19,12 +19,15 @@ const OtherExpensesActualBreakdownByMonth = sequelize.define(
       allowNull: false,
     },
     FK_WTT_Project_ID: DataTypes.BIGINT,
+
     FK_ExpenseCategory_ID: DataTypes.BIGINT,
+
     april: {
       type: DataTypes.BIGINT,
       allowNull: false,
       comment: 'Value for April',
     },
+    
     aprilComment: {
       type: DataTypes.STRING,
       allowNull: true,
