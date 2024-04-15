@@ -7,7 +7,7 @@ const { WTT_Employee } = require('../../models/database2/wtt_employee');
 const { Op, where } = require('sequelize');
 const { WTT_FinancialYear } = require('../../models/database2/wtt_financialYear');
 
-const getAllResourceCostWithNames = async (req, res) => {
+const getAllResourceCostWithProjectId = async (req, res) => {
   const { projectId }= req.params;
   const { fyId } = req.query;
 
@@ -40,6 +40,11 @@ const getAllResourceCostWithNames = async (req, res) => {
         {
           model: WTT_Employee, // Assuming WTT_Employee is the name of the Employee table
           as: 'Employee', // Adjust this according to the actual association alias in your Sequelize model
+        },
+        {
+          model: WTT_ProjectResources, // Include the same model again for the field you want to include
+          as: 'fk_id', // Alias for the included field
+          attributes: ['id'] // Specify the attribute(s) you want to include
         }
       ]
     });
@@ -132,27 +137,10 @@ const getAllResourceCostWithNames = async (req, res) => {
     return res.status(500).json({ error: 'Server Error' });
   }
 };
-const updateAllResourceCostWithNames = async (req, res) => {
+const updateAllResourceCostWithProjectId = async (req, res) => {
   const { projectId } = req.params;
 
   try {
-    // const employees = await WTT_ProjectResources.findAll({
-    //   where: {
-    //     FK_WTT_Project_ID: projectId,
-    //     isActive: 'true', 
-
-    //     // endDate: {
-    //     //   [Op.gte]: new Date() // This checks if endDate is greater than or equal to the current date
-    //     // }
-    //   },
-    //   include: [
-    //     {
-    //       model: WTT_Employee, // Assuming WTT_Employee is the name of the Employee table
-    //       as: 'Employee', // Adjust this according to the actual association alias in your Sequelize model
-    //     }
-    //   ]
-    // });
-
     const resourceCostActual = await resourceCostActualBreakdownByMonthController.getRecordByProjectId(projectId);
     if(resourceCostActual) {
       return res.json(resourceCostActual);
@@ -167,6 +155,6 @@ const updateAllResourceCostWithNames = async (req, res) => {
 };
 
 module.exports = {
-  getAllResourceCostWithNames,
-  updateAllResourceCostWithNames
+  getAllResourceCostWithProjectId,
+  updateAllResourceCostWithProjectId
 };
