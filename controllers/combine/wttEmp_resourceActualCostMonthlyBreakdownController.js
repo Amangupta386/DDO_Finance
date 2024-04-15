@@ -71,7 +71,7 @@ const getAllResourceCostWithProjectId = async (req, res) => {
           employeeName: employee.FullName,
           // Additional properties
           joiningDate: formattedJoiningDate,
-          FK_WTT_Employee_ID: rc?.FK_WTT_Employee_ID || 'N/A',
+          FK_WTT_Employee_ID: employee.id || 'N/A',
           monthlyCostComp1: rc?.monthlyCostComp1 || 'N/A',
           monthlyCostComp2: rc?.monthlyCostComp2 || 'N/A',
           monthlyCostComp3: rc?.monthlyCostComp3 || 'N/A',
