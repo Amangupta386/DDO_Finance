@@ -191,7 +191,8 @@ const updateAllResourceCostWithProjectId = async (req, res) => {
     }
 
   } catch (error) {
-    return res.status(500).json({ error: 'Server Error' });
+    console.log(error);
+    return res.status(500).json({ error: error });
   }
 };
 
