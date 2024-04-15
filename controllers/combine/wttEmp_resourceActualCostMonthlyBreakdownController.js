@@ -167,8 +167,9 @@ const updateAllResourceCostWithProjectId = async (req, res) => {
       inputObj[data.label.toLowerCase()] = data.value || 0;
       inputObj[data.label.toLowerCase()+'Comment'] = data.commentValue || '';
     });
-
+    console.log(inputObj, "cons11");
     await ResourceCostActualBreakdownByMonth.create(inputObj);
+    console.log(inputObj, "cons13");
     return  res.send({
       message:"Record Updated"
     });
