@@ -6,6 +6,7 @@ const { WTT_ProjectResources } = require('../../models/database2/wtt_projectreso
 const { WTT_Employee } = require('../../models/database2/wtt_employee');
 const { Op, where } = require('sequelize');
 const { WTT_FinancialYear } = require('../../models/database2/wtt_financialYear');
+const { ResourceCostActualBreakdownByMonth } = require('../../models/database1/ResourceCostActualBreakdownByMonth');
 
 const getAllResourceCostWithProjectId = async (req, res) => {
   const { projectId }= req.params;
@@ -137,10 +138,46 @@ const getAllResourceCostWithProjectId = async (req, res) => {
   }
 };
 const updateAllResourceCostWithProjectId = async (req, res) => {
-  const { projectId } = req.params;
+  const { id } = req.body;
+
 
   try {
-    const resourceCostActual = await resourceCostActualBreakdownByMonthController.getRecordByProjectId(projectId);
+    let rec; 
+    if(id){
+        rec = await ResourceCostActualBreakdownByMonth.findOne({
+          where: {
+            id
+          }
+        })
+    }
+
+    if(!rec){
+        const date = new Date();
+      const inputObj  = { 
+        createdAt:date ,
+      updatedAt: date,
+      sort: 1,
+      createdById:req.user.id,
+      updatedById: req.user.id,
+      FK_FinancialYear_ID: req.body.FK_FinancialYear_ID,
+      FK_WTT_Project_ID: req.body.FK_WTT_Project_ID,
+      FK_WTT_Employee_ID: req.body.FK_WTT_Employee_ID,
+    };
+    req.body.monthValues.forEach((data)=>{
+      inputObj[data.label.toLowerCase()] = data.value;
+      inputObj[data.label.toLowerCase()+'Comment'] = data.commentValue;
+    });
+
+    res.send(inputObj);
+      return; 
+    }
+    req.body.monthValues.forEach((data)=>{
+      rec[data.label.toLowerCase()] = data.value;
+      rec[data.label.toLowerCase()+'Comment'] = data.commentValue;
+    });
+
+
+    rec.save();
     if(resourceCostActual) {
       return res.json(resourceCostActual);
     } else {

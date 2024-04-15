@@ -6,7 +6,7 @@ const resourceCostActualBreakdownByMonthController = require('../controllers/dat
 const wttEmp_resourceCostActualBreakdownController = require('../controllers/combine/wttEmp_resourceActualCostMonthlyBreakdownController');
 
 router.route('/')
-  .post(resourceCostActualBreakdownByMonthController.createRecord)
+  .post(wttEmp_resourceCostActualBreakdownController.updateAllResourceCostWithProjectId)
   .get(resourceCostActualBreakdownByMonthController.getAllRecords);
 
 router.route('/:id')
@@ -15,8 +15,7 @@ router.route('/:id')
   .delete(resourceCostActualBreakdownByMonthController.deleteRecord);
 
 router.route('/project/:projectId')
-  .get(wttEmp_resourceCostActualBreakdownController.getAllResourceCostWithProjectId)
-  .post(wttEmp_resourceCostActualBreakdownController.updateAllResourceCostWithProjectId);
+  .get(wttEmp_resourceCostActualBreakdownController.getAllResourceCostWithProjectId);
 
 
 module.exports = router;
