@@ -34,21 +34,20 @@ const getAllResourceCostWithProjectId = async (req, res) => {
       };
     }
    
-    const employees = await WTT_ProjectResources.findAll({
+    const employees = JSON.parse(JSON.stringify(await WTT_ProjectResources.findAll({
       where: filter,
       include: [
         {
           model: WTT_Employee, // Assuming WTT_Employee is the name of the Employee table
           as: 'Employee', // Adjust this according to the actual association alias in your Sequelize model
-        },
-        {
-          model: WTT_ProjectResources, // Include the same model again for the field you want to include
-          as: 'fk_id', // Alias for the included field
-          attributes: ['id'] // Specify the attribute(s) you want to include
         }
       ]
+    })));
+    employees.forEach(emp => {
+       const tempId = emp.id;
+       delete emp.id; 
+       emp.fk_id = tempId;
     });
-
     const resourceCostActual = await resourceCostActualBreakdownByMonthController.getRecordByProjectId(projectId);
     (resourceCostActual, "Data employees:");
     (employees, "employees: d");
@@ -66,7 +65,7 @@ const getAllResourceCostWithProjectId = async (req, res) => {
 
       if (employee) {
         return {
-          id: employee.dataValues.id,
+          id: rc.dataValues.id || undefined,
           employeeCode: employee.dataValues.EmployeeCode,
           employeeName: employee.dataValues.FullName,
           // Additional properties
