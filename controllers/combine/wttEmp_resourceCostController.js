@@ -41,8 +41,8 @@ const getAllAllocatedResourceCost = async (req, res) => {
               //('Daily Cost: ', dailyCost);
 
               // Example usage:
-              const startDate = new Date('2023-11-01');
-              const endDate = new Date('2023-11-15');
+              // const startDate = new Date('2023-11-01');
+              // const endDate = new Date('2023-11-15');
               const percentage = calculatePercentageDays(ar.startDate, ar.endDate);
               (`Percentage of days between ${ar.startDate.toDateString()} and ${ar.endDate.toDateString()}: ${percentage.toFixed(2)}%`);
 
@@ -60,7 +60,7 @@ const getAllAllocatedResourceCost = async (req, res) => {
                 endDate: formattedEndDate,
                 allocPercent: ar.allocPercent+'%',
                 allocatedDaysPercent: allocatedDaysPercent+'%',
-                resourceCost: allocatedCost
+                resourceCost: totalMonthlyCost
               };
             } else {
               return {
