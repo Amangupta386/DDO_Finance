@@ -182,13 +182,10 @@ const updateAllResourceCostWithProjectId = async (req, res) => {
 
 
     rec.save();
-    if(resourceCostActual) {
       return res.send({
         message:"Record Updated"
       });
-    } else {
-      return res.json("Record not found");
-    }
+   
 
   } catch (error) {
     console.log(error);
