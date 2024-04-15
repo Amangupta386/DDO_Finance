@@ -164,34 +164,32 @@ const updateAllResourceCostWithProjectId = async (req, res) => {
       FK_WTT_Employee_ID: req.body.FK_WTT_Employee_ID,
     };
     req.body.monthValues.forEach((data)=>{
-      inputObj[data.label.toLowerCase()] = data.value;
-      inputObj[data.label.toLowerCase()+'Comment'] = data.commentValue;
+      inputObj[data.label.toLowerCase()] = data.value || 0;
+      inputObj[data.label.toLowerCase()+'Comment'] = data.commentValue || '';
     });
 
     await ResourceCostActualBreakdownByMonth.create(inputObj);
-    res.send({
+    return  res.send({
       message:"Record Updated"
     });
-      return; 
+     
     }
     req.body.monthValues.forEach((data)=>{
-      rec[data.label.toLowerCase()] = data.value;
-      rec[data.label.toLowerCase()+'Comment'] = data.commentValue;
+      rec[data.label.toLowerCase()] = data.value || 0;
+      rec[data.label.toLowerCase()+'Comment'] = data.commentValue || '';
     });
 
 
     rec.save();
     if(resourceCostActual) {
-      res.send({
+      return res.send({
         message:"Record Updated"
       });
-      return
     } else {
       return res.json("Record not found");
     }
 
   } catch (error) {
-    const newRec = await resourceCostActualBreakdownByMonthController.createRecord(req,res);
     return res.status(500).json({ error: 'Server Error' });
   }
 };
