@@ -14,7 +14,14 @@ const createRecord = async (req, res) => {
 // Get all records
 const getAllRecords = async (req, res) => {
   try {
-    const records = await ForecastedRevenueBreakdownByMonth.findAll();
+    const { financialYearId, projectId} = req.query;
+    const records = await ForecastedRevenueBreakdownByMonth.findAll({
+    where: {
+      FK_FinancialYear_ID: financialYearId,
+      FK_WTT_Project_ID:projectId,
+    
+    }
+  });
     const formattedRecords = records.map(formatRevenueRecord);
     res.status(200).json(formattedRecords);
   } catch (error) {
