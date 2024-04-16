@@ -101,7 +101,7 @@ const uploadExcel = async (req, res) => {
     
 
         // Return success response
-        return res.json({transformedData });
+        return res.send(transformedData );
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: 'Server Error' });
