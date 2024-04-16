@@ -96,8 +96,10 @@ const uploadExcel = async (req, res) => {
             updatedAt: "2024-04-16T15:52:55.998Z"
         };
     });
+
+    console.log('cjd');
     
-    
+
         // Return success response
         return res.json({transformedData });
     } catch (error) {
