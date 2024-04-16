@@ -11,8 +11,20 @@ const createRecord = async (req, res) => {
 };
 
 const getAllRecords = async (req, res) => {
-    try {
-      const records = await ActualCollectionBreakdownByMonth.findAll();
+  try {
+    const { financialYearId, projectId } = req.query;
+    if(!financialYearId){
+      throw new Error("financialYearId is missing in the query params");
+    }
+    const whereClause = {
+      FK_FinancialYear_ID: financialYearId,
+    };
+    if (projectId) {
+      whereClause.FK_WTT_Project_ID = projectId;
+    }
+      const records = await ActualCollectionBreakdownByMonth.findAll({
+        where: whereClause,
+      });
       const formattedRecords = records.map(formatCollectionRecord);
       res.status(200).json(formattedRecords);
     } catch (error) {

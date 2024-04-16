@@ -21,15 +21,19 @@ exports.getAllProjects = async (req, res) => {
   }
 };
 
-exports.getAllProjects2 = async (req, res) => {
+exports.getAllProjects2 = async (clientId, buId) => {
   try {
+    const filter = {
+      isActive: 'true', 
+     
+    };
+    clientId && (filter['FK_WTT_Customer_ID']=clientId);
+    buId && (filter['FK_WTT_BusinessUnit_ID']=buId);
     const wttProjects = await WTTProject.findAll({
       order:[
         ['id','ASC']
        ],
-      where: {
-        isActive: 'true', 
-      },
+      where: filter,
     });
     // Extract the dataValues and convert to a plain array
     const plainArray = wttProjects.map(project => project.dataValues);
@@ -37,7 +41,7 @@ exports.getAllProjects2 = async (req, res) => {
     return plainArray;
 
   } catch (error) {
-    res.status(500).json({ error: 'Unable to fetch projects' });
+   throw Error('Unable to fetch projects');
   }
 };
 

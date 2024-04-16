@@ -14,7 +14,19 @@ const createRecord = async (req, res) => {
 // Get all records
 const getAllRecords = async (req, res) => {
   try {
-    const records = await ForecastedRevenueBreakdownByMonth.findAll();
+    const { financialYearId, projectId } = req.query;
+    if(!financialYearId){
+      throw new Error("financialYearId is missing in the query params");
+    }
+    const whereClause = {
+      FK_FinancialYear_ID: financialYearId,
+    };
+    if (projectId) {
+      whereClause.FK_WTT_Project_ID = projectId;
+    }
+    const records = await ForecastedRevenueBreakdownByMonth.findAll({
+      where: whereClause,
+    });
     const formattedRecords = records.map(formatRevenueRecord);
     res.status(200).json(formattedRecords);
   } catch (error) {
@@ -22,6 +34,7 @@ const getAllRecords = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 const getRecordById = async (req, res) => {
   const { id } = req.params;
