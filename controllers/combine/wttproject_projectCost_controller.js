@@ -149,21 +149,10 @@ const getAllProjectsWithCorrespondingNames = async (req, res) => {
 
 const getAllProjectsWithCorrespondingNameList = async (req, res) => {
   try {
-      const currencies = await currencyController.getAllCurrencies2();
-      const paymentTerms = await paymentTermController.getAllPaymentTerms2();
-      const businessUnits = await wttBusinessUnitController.getAllWTTBusinessUnits2();
-      const wttCustomers = await wttCustomerController.getAllWTTCustomers2();
-      const wttProjects = await WTTProjectController.getAllProjects2();
+      const {clientId, buId} = req.query;
+      const wttProjects = await WTTProjectController.getAllProjects2(clientId, buId);
 
       const combinedData = wttProjects?.map((project) => {
-          // Find the associated Customers
-          const customer = wttCustomers.find((c) => c.id === project.FK_WTT_Customer_ID);
-          // Find the associated BUs
-          const businessUnit = businessUnits.find((bu) => bu.id === project.FK_WTT_BusinessUnit_ID);
-          // Find the associated Payment Terms
-          const paymentTerm = paymentTerms.find((fy) => fy.id === project.FK_WTT_PaymentTerm_ID);
-          // Find the associated Payment Terms
-          const currency = currencies.find((cu) => cu.id === project.FK_WTT_Currency_ID);
         
           if (project) {
             
