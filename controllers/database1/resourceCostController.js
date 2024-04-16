@@ -100,6 +100,8 @@ exports.handleMutipleObjects = async (req, res) => {
   const results = [];
   let resultOfPut = '';
   let resultOfPost = '';
+  console.log('tsting sdkd');
+
   
   if (!Array.isArray(req.body)) {
     return res.status(400).json({ error: 'Request body should be an array of objects' });
