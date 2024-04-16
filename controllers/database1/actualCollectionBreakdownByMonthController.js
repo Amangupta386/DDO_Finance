@@ -14,7 +14,7 @@ const getAllRecords = async (req, res) => {
   try {
     const { financialYearId, projectId } = req.query;
     if(!financialYearId){
-      throw Error("financialYearId is missing in the query params");
+      throw new Error("financialYearId is missing in the query params");
     }
     const whereClause = {
       FK_FinancialYear_ID: financialYearId,
