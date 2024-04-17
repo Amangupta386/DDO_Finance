@@ -28,7 +28,7 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
             const whereClause = {
               FK_FinancialYear_ID: fyear.id,
             };
-            if (projectId) {
+            if (project.id) {
               whereClause.FK_WTT_Project_ID = project.id;
             }
             const records = await ForecastedRevenueBreakdownByMonth.findOne({
