@@ -23,6 +23,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const getAllResourceCostWithNames = async (req, res) => {
+  console.log('testjs');
     try {
         const employees = await wttEmployeeController.getAllEmployees2();
         const resourceCosts = await resourceCostController.getAllResourceCosts2();
@@ -63,6 +64,7 @@ const getAllResourceCostWithNames = async (req, res) => {
                 };
             }
         });  
+        console.log(combinedData);
         return res.json(combinedData);
     } catch (error) {
         console.error(error);
@@ -95,7 +97,7 @@ const uploadExcel = async (req, res) => {
 
    const ress =   await ResourceCost.bulkCreate(transformedData);
       
-      return res.status(200).json({ message: 'Data saved successfully', data: ress });
+      return res.status(200).json({ress});
   } catch (error) {
       console.error("Error during uploadExcel:", error);
       return res.status(500).json({ error: 'Server Error' });
