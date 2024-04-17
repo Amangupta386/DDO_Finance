@@ -23,7 +23,7 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
           // Find the associated Fyear
           const fyear = financialYear.find((fy) => parseInt(fy.id) === pc.FK_FinancialYear_ID);
 
-          if (fyear) {
+          if (pc.FK_FinancialYear_ID) {
               // Find the associated project
               const project = wttProjects.find((p) => parseInt(p.id) === pc.FK_WTT_Project_ID);
 
@@ -31,7 +31,7 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
                   // If a project is found, continue to find the associated customer
                   const customer = wttCustomers.find((c) => c.id === project.FK_WTT_Customer_ID);
                   const whereClause = {
-                      FK_FinancialYear_ID: fyear.id,
+                      FK_FinancialYear_ID: pc.FK_FinancialYear_ID,
                   };
 
                   if (project.id) {
