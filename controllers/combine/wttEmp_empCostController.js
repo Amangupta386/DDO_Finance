@@ -26,15 +26,17 @@ const getAllResourceCostWithNames = async (req, res) => {
   console.log('testjs');
     try {
         const employees = await wttEmployeeController.getAllEmployees2();
-        const resourceCosts  = await resourceCostController.getAllResourceCosts2();
+        console.log(employees.length)
+        const resourceCosts = await resourceCostController.getAllResourceCosts2();
+        console.log(resourceCosts.length)
         const designations = await designationController.getAllDesignations2();
-
-        const combinedData = employees?.map((emp) => {
-            const resources = resourceCosts.find((rc) => rc.FK_WTT_Employee_ID === emp.id);
+console.log(resourceCosts?.filter((rc)=>!!employees.find((emp) => rc.FK_WTT_Employee_ID === emp.id)))
+        const combinedData = resourceCosts?.filter((rc)=>!!employees.find((emp) => rc.FK_WTT_Employee_ID === emp.id)).map((rc) => {
+            const emp = employees.find((emp) => rc.FK_WTT_Employee_ID === emp.id);
             const designation = designations.find((d) => d.id === emp.FK_WTT_Master_Emp_Designation_ID);
             const formattedJoiningDate = moment(emp.JoiningDate).format('DD/MM/YYYY');
-            
-            if (resources) {       
+              const resources = rc;
+            if (emp) {       
                 return {
                     id: resources.id,
                     employeeCode: emp.EmployeeCode,
