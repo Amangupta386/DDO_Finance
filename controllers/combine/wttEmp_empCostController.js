@@ -4,6 +4,7 @@ const wttEmployeeController = require('../database2/wttEmployeeController');
 const resourceCostController = require('../database1/resourceCostController');
 const designationController = require('../database2/designationController');
 const xlsx = require('xlsx');
+const { ResourceCost } = require('../../models/database1/resourceCost');
 
 
 // Configure multer for disk storage
@@ -68,45 +69,89 @@ const getAllResourceCostWithNames = async (req, res) => {
         return res.status(500).json({ error: 'Server Error' });
     }   
 }
-
 const uploadExcel = async (req, res) => {
-    try {
-        if (!req.file) {
-            return res.status(400).json({ error: 'No file uploaded' });
-        }
+  try {
+      if (!req.file) {
+          return res.status(400).json({ error: 'No file uploaded' });
+      }
 
-        const file = req.file;
-        const workbook = xlsx.read(file.buffer, { type: 'buffer' });
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-        const data = xlsx.utils.sheet_to_json(sheet);
-       
+      const file = req.file;
+      const workbook = xlsx.read(file.buffer, { type: 'buffer' });
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const data = xlsx.utils.sheet_to_json(sheet);
+
+      console.log("Received data from Excel:", data);
+     
       const transformedData = data.map(item => {
-       
-        return {
-            id: item.EmployeeId,
-            FK_WTT_Employee_ID: item.EmployeeId,
-            monthlyCostComp1: item.MonthlyCostComp1,
-            monthlyCostComp2: item.MonthlyCostComp2,
-            monthlyCostComp3: item.MonthlyCostComp3,
-            monthlyCostComp4: item.MonthlyCostComp4,
-            createdById: 7,
-            createdAt: "2023-10-23T05:39:59.624Z",
-            updatedById: null,
-            updatedAt: "2024-04-16T15:52:55.998Z"
-        };
-    });
+          console.log("Transforming item:", item);
+          return {
+              FK_WTT_Employee_ID: String(item.EmployeeId),
+              monthlyCostComp1: item.MonthlyCostComp1,
+              monthlyCostComp2: item.MonthlyCostComp2,
+              monthlyCostComp3: item.MonthlyCostComp3,
+              monthlyCostComp4: item.MonthlyCostComp4,
+              createdById: req.user.id,
+              totalMonthlyCost: 100000
+          };
+      });
+      console.log("Transformed data:", transformedData);
 
-    console.log('cjd');
-    
-
-        // Return success response
-        return res.send(transformedData );
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: 'Server Error' });
-    }
+   const ress =   await ResourceCost.bulkCreate(transformedData);
+      
+      console.log("Data saved successfully.", ress);
+      return res.status(200).json({ message: 'Data saved successfully', data: ress });
+  } catch (error) {
+      console.error("Error during uploadExcel:", error);
+      return res.status(500).json({ error: 'Server Error' });
+  }
 }
+
+
+// const uploadExcel = async (req, res) => {
+//     try {
+//         if (!req.file) {
+//             return res.status(400).json({ error: 'No file uploaded' });
+//         }
+
+//         const file = req.file;
+//         const workbook = xlsx.read(file.buffer, { type: 'buffer' });
+//         const sheetName = workbook.SheetNames[0];
+//         const sheet = workbook.Sheets[sheetName];
+//         const data = xlsx.utils.sheet_to_json(sheet);
+
+//         console.log(data);
+       
+//       const transformedData = data.map(item => {
+//         console.log(item);
+//         return {
+//             FK_WTT_Employee_ID: String(item.EmployeeId),
+//             monthlyCostComp1: item.MonthlyCostComp1,
+//             monthlyCostComp2: item.MonthlyCostComp2,
+//             monthlyCostComp3: item.MonthlyCostComp3,
+//             monthlyCostComp4: item.MonthlyCostComp4,
+//             createdById: req.user.id,
+//             totalMonthlyCost:0
+//             // employeeCode: String(item.EmployeeId),
+//             // employeeName: item.EmployeeName,
+//             // designationName:item.Designation,
+//             // joiningDate: item.JoiningDate,
+//             // FK_WTT_Employee_ID:String(item.EmployeeId),
+//             // totalMonthlyCost: '0',
+//             // monthlyCostComp1: item.MonthlyCostComp1,
+//             // monthlyCostComp2: item.MonthlyCostComp2,
+//             // monthlyCostComp3: item.MonthlyCostComp3,
+//             // monthlyCostComp4: item.MonthlyCostComp4
+//         };
+//     });
+//     console.log(transformedData);
+//         await ResourceCost.bulkCreate(transformedData)
+//         return res.send(transformedData );
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(500).json({ error: 'Server Error' });
+//     }
+// }
 
 module.exports = {
     getAllResourceCostWithNames,
