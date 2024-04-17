@@ -6,6 +6,7 @@ const currencyController = require('../database2/currencyController');
 const paymentTermController = require('../database2/paymentTermController');
 const wttBusinessUnitController = require('../database2/wttBusinessUnitController');
 const { formatRevenueRecord } = require('../database1/forecastedRevenueBreakdownByMonthController');
+const { ForecastedRevenueBreakdownByMonth } = require('../../models/database1/ForecastedRevenueBreakdownByMonth');
 
 const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
     try {
