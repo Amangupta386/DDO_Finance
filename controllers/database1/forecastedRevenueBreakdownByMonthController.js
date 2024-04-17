@@ -124,4 +124,5 @@ module.exports = {
   getRecordById,
   updateRecord,
   deleteRecord,
+  formatRevenueRecord,
 };
