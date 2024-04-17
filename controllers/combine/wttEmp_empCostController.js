@@ -97,7 +97,7 @@ const uploadExcel = async (req, res) => {
 
    const ress =   await ResourceCost.bulkCreate(transformedData);
       
-      return res.status(200).json({ress});
+      return res.status(200).json(ress);
   } catch (error) {
       console.error("Error during uploadExcel:", error);
       return res.status(500).json({ error: 'Server Error' });
