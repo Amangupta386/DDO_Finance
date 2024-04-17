@@ -26,7 +26,7 @@ const getAllResourceCostWithNames = async (req, res) => {
   console.log('testjs');
     try {
         const employees = await wttEmployeeController.getAllEmployees2();
-        const resourceCosts = await resourceCostController.getAllResourceCosts2();
+        const resourceCosts  = await resourceCostController.getAllResourceCosts2();
         const designations = await designationController.getAllDesignations2();
 
         const combinedData = employees?.map((emp) => {
@@ -64,7 +64,6 @@ const getAllResourceCostWithNames = async (req, res) => {
                 };
             }
         });  
-        console.log(combinedData);
         return res.json(combinedData);
     } catch (error) {
         console.error(error);
@@ -85,7 +84,7 @@ const uploadExcel = async (req, res) => {
 
       const transformedData = data.map(item => {
           return {
-              FK_WTT_Employee_ID: String(item.EmployeeId),
+              FK_WTT_Employee_ID: +(item.EmployeeId),
               monthlyCostComp1: item.MonthlyCostComp1,
               monthlyCostComp2: item.MonthlyCostComp2,
               monthlyCostComp3: item.MonthlyCostComp3,
