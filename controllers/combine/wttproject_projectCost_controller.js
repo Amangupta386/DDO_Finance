@@ -20,15 +20,10 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
       for (let i = 0; i < projectsWithCost.length; i++) {
           const pc = projectsWithCost[i];
 
-          // Debugging to understand the issue
-          console.log('Financial Years:', financialYear);
-          console.log('Project Cost Financial Year ID:', pc.FK_FinancialYear_ID);
-
           // Find the associated Fyear
           const fyear = financialYear.find((fy) => parseInt(fy.id) === pc.FK_FinancialYear_ID);
 
           if (fyear) {
-              // If a financial year is found, continue processing
               // Find the associated project
               const project = wttProjects.find((p) => parseInt(p.id) === pc.FK_WTT_Project_ID);
 
@@ -91,6 +86,7 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
       return res.status(500).json({ error: 'Server Error' });
   }
 };
+
 
 // const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
 //     try {
