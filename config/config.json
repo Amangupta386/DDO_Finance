@@ -2,14 +2,14 @@
   "development": {
     "username": "postgres",
     "password": "postgres",
-    "database": "db_finance_forecast",
+    "database": "ddoplus_finance_dev",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "development2": {
     "username": "postgres",
     "password": "postgres",
-    "database": "ddoPlusLocalLatest",
+    "database": "ddoplusuat_db",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
