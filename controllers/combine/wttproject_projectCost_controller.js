@@ -34,7 +34,7 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
             const records = await ForecastedRevenueBreakdownByMonth.findOne({
               where: whereClause,
             });
-            const formattedRecords = (formatRevenueRecord(records)).monthValues.reduce((t,d)=> t+d.value, 0);
+            const formattedRecords =records ? (formatRevenueRecord(records)).monthValues.reduce((t,d)=> t+d.value, 0): 0;
         
             combinedData.push({
               id: pc.id,
