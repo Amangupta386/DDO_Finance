@@ -53,8 +53,8 @@ const getAllRecords = async (req, res) => {
     res.status(200).json(formattedRecords);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+    res.status(400).json({ error: error.message }); 
+    }
 };
 
 const getRecordById = async (req, res) => {
