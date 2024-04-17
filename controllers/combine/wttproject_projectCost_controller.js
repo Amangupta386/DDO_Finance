@@ -42,7 +42,8 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
                       where: whereClause,
                   });
 
-                  const formattedRecords = records ? (formatRevenueRecord(records)).monthValues.reduce((t, d) => t + d.value, 0) : 0;
+                  const formattedRecords = records ? formatRevenueRecord(records) : null;
+                  const forecast = formattedRecords ? formattedRecords.monthValues.reduce((total, record) => total + parseFloat(record.value), 0) : 0;
 
                   combinedData.push({
                       id: pc.id,
@@ -52,7 +53,7 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
                       customerName: customer ? customer.name : 'N/A',
                       FK_WTT_Project_ID: pc.FK_WTT_Project_ID,
                       projectName: project.name,
-                      forecast: formattedRecords,
+                      forecast: forecast,
                       actual: pc.actual,
                       projectStatus: pc.projectStatus
                       // Add other fields as needed...
@@ -67,8 +68,8 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
                       customerName: 'N/A', // Default value for customer name
                       FK_WTT_Project_ID: pc.FK_WTT_Project_ID,
                       projectName: 'N/A', // Default value for project name
-                      forecast: "0", // Default value for forecast
-                      actual: "0", // Default value for actual
+                      forecast: 0, // Default value for forecast
+                      actual: 0, // Default value for actual
                       projectStatus: 'N/A'
                       // Add other default values as needed...
                   });
@@ -86,6 +87,7 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
       return res.status(500).json({ error: 'Server Error' });
   }
 };
+
 
 
 // const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
