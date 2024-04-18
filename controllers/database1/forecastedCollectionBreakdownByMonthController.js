@@ -124,10 +124,6 @@ const deleteRecord = async (req, res) => {
 const getDashboardForecastedCollection = async (req, res) => {
   try {
     const { financialYearId, projectId, buId, clientId } = req.query;
-    // if (!financialYearId) {
-    //   throw new Error("financialYearId is missing in the query params");
-    // }
-    
     const filter = {};
 
     if (clientId) {
@@ -153,7 +149,6 @@ const getDashboardForecastedCollection = async (req, res) => {
       whereClause.FK_FinancialYear_ID= +financialYearId;
   }
     if (wttProjects.length) {
-      console.log(wttProjects.map(p=> p.id));
       whereClause.FK_WTT_Project_ID = {[Op.in]: wttProjects.map(p=> p.id)};
     }
 
@@ -162,7 +157,6 @@ const getDashboardForecastedCollection = async (req, res) => {
     });
 
     const formattedRecords = records.map(formatCollectionRecord);
-    console.log(records.length, whereClause);
     const data = formattedRecords[0]; 
     formattedRecords.slice(1).forEach((dataChild)=>{
   
