@@ -118,10 +118,59 @@ const deleteRecord = async (req, res) => {
   }
 };
 
+
+const getDashboardForecastedCollection = async (req, res) => {
+  try {
+    const { financialYearId, projectId, buId, clientId } = req.query;
+    if (!financialYearId) {
+      throw new Error("financialYearId is missing in the query params");
+    }
+    
+    const filter = {};
+
+    if (clientId) {
+      filter['FK_WTT_Customer_ID'] = clientId;
+    }
+
+    if (buId) {
+      filter['FK_WTT_BusinessUnit_ID'] = buId;
+    }
+    if (projectId) {
+      filter['id'] = projectId;
+    }
+
+    const wttProjects = await WTTProject.findAll({
+      order: [['id', 'ASC']],
+      where: filter,
+    });
+
+    const whereClause = {
+      FK_FinancialYear_ID: financialYearId,
+    };
+
+    if (wttProjects.length) {
+      whereClause.FK_WTT_Project_ID = wttProjects.map(p=> p.id);
+    }
+
+    const records = await ForecastedCollectionBreakdownByMonth.findAll({
+      where: whereClause,
+    });
+
+    const formattedRecords = records.map(formatCollectionRecord);
+
+    res.status(200).json(formattedRecords);
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ error: error.message });
+  }
+};
+
+
 module.exports = {
   createRecord,
   getAllRecords,
   getRecordById,
   updateRecord,
   deleteRecord,
+  getDashboardForecastedCollection
 };
