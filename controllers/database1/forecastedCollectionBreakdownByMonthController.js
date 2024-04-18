@@ -158,8 +158,14 @@ const getDashboardForecastedCollection = async (req, res) => {
     });
 
     const formattedRecords = records.map(formatCollectionRecord);
+    const data = formattedRecords[0]; 
+    formattedRecords.slice(1).forEach((dataChild)=>{
+      data.monthValues = data.monthValues.map((d, i)=> {
+         d.value = (+d.value) + (+(dataChild.monthValues[i].value));
+      });
+    });
 
-    res.status(200).json(formattedRecords);
+    res.status(200).json(data);
   } catch (error) {
     console.error(error);
     res.status(400).json({ error: error.message });
