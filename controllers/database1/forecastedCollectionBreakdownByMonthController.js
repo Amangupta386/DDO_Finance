@@ -1,5 +1,6 @@
 // controllers/forecastedCollectionBreakdownByMonthController.js
 const {ForecastedCollectionBreakdownByMonth} = require('../../models/database1/ForecastedCollectionBreakdownByMonth');
+const { WTTProject } = require('../../models/database2/wtt_project');
 const createRecord = async (req, res) => {
   try {
     const newRecord = await ForecastedCollectionBreakdownByMonth.create(req.body);
