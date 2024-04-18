@@ -1,6 +1,7 @@
 // controllers/forecastedCollectionBreakdownByMonthController.js
 const {ForecastedCollectionBreakdownByMonth} = require('../../models/database1/ForecastedCollectionBreakdownByMonth');
 const { WTTProject } = require('../../models/database2/wtt_project');
+const { Op } = require('sequelize');
 const createRecord = async (req, res) => {
   try {
     const newRecord = await ForecastedCollectionBreakdownByMonth.create(req.body);
@@ -123,9 +124,9 @@ const deleteRecord = async (req, res) => {
 const getDashboardForecastedCollection = async (req, res) => {
   try {
     const { financialYearId, projectId, buId, clientId } = req.query;
-    if (!financialYearId) {
-      throw new Error("financialYearId is missing in the query params");
-    }
+    // if (!financialYearId) {
+    //   throw new Error("financialYearId is missing in the query params");
+    // }
     
     const filter = {};
 
@@ -146,11 +147,14 @@ const getDashboardForecastedCollection = async (req, res) => {
     });
 
     const whereClause = {
-      FK_FinancialYear_ID: financialYearId,
     };
-
+  if(financialYearId){
+      
+      whereClause.FK_FinancialYear_ID= +financialYearId;
+  }
     if (wttProjects.length) {
-      whereClause.FK_WTT_Project_ID = wttProjects.map(p=> p.id);
+      console.log(wttProjects.map(p=> p.id));
+      whereClause.FK_WTT_Project_ID = {[Op.in]: wttProjects.map(p=> p.id)};
     }
 
     const records = await ForecastedCollectionBreakdownByMonth.findAll({
@@ -158,10 +162,14 @@ const getDashboardForecastedCollection = async (req, res) => {
     });
 
     const formattedRecords = records.map(formatCollectionRecord);
+    console.log(records.length, whereClause);
     const data = formattedRecords[0]; 
     formattedRecords.slice(1).forEach((dataChild)=>{
+  
       data.monthValues = data.monthValues.map((d, i)=> {
+        if(d)
          d.value = (+d.value) + (+(dataChild.monthValues[i].value));
+        return d;
       });
     });
 
