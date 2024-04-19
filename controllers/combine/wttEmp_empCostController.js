@@ -28,7 +28,7 @@ const getAllResourceCostWithNames = async (req, res) => {
         const employees = await wttEmployeeController.getAllEmployees2();
         const resourceCosts  = await resourceCostController.getAllResourceCosts2();
         const designations = await designationController.getAllDesignations2();
-        
+
         const combinedData = employees?.map((emp) => {
             const resources = resourceCosts.find((rc) => rc.FK_WTT_Employee_ID === emp.id);
             const designation = designations.find((d) => d.id === emp.FK_WTT_Master_Emp_Designation_ID);
@@ -84,28 +84,17 @@ const uploadExcel = async (req, res) => {
 
       const transformedData = data.map(item => {
           return {
-            //   FK_WTT_Employee_ID: +(item.EmployeeId),
-            //   monthlyCostComp1: item.MonthlyCostComp1,
-            //   monthlyCostComp2: item.MonthlyCostComp2,
-            //   monthlyCostComp3: item.MonthlyCostComp3,
-            //   monthlyCostComp4: item.MonthlyCostComp4,
-            //   createdById: req.user.id,
-            //   totalMonthlyCost: 100000
-            //   {
-                "id": 20,
-                "FK_WTT_Employee_ID": 173,
-                "monthlyCostComp1": "456",
-                "monthlyCostComp2": "0",
-                "monthlyCostComp3": "0",
-                "monthlyCostComp4": "00",
-                "createdById": 7
-            // }
-
-              
+              FK_WTT_Employee_ID: +(item.EmployeeId),
+              monthlyCostComp1: item.MonthlyCostComp1,
+              monthlyCostComp2: item.MonthlyCostComp2,
+              monthlyCostComp3: item.MonthlyCostComp3,
+              monthlyCostComp4: item.MonthlyCostComp4,
+              createdById: req.user.id,
+              totalMonthlyCost: 100000
           };
       });
 
-    const ress =   await ResourceCost.bulkCreate(transformedData);
+   const ress =   await ResourceCost.bulkCreate(transformedData);
       
       return res.status(200).json(ress);
   } catch (error) {
