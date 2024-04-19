@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const forecastedRevenueBreakdownByMonthController = require('../controllers/database1/forecastedRevenueBreakdownByMonthController');
 
+
+router.route('/dashboard').get(forecastedRevenueBreakdownByMonthController.getDashboardForecastedRevenue);
 router.route('/')
   // Create a new record
   .post(forecastedRevenueBreakdownByMonthController.createRecord)

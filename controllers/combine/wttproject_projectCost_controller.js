@@ -6,7 +6,12 @@ const currencyController = require('../database2/currencyController');
 const paymentTermController = require('../database2/paymentTermController');
 const wttBusinessUnitController = require('../database2/wttBusinessUnitController');
 const { formatRevenueRecord } = require('../database1/forecastedRevenueBreakdownByMonthController');
+const {formatActualRecord } = require('../database1/actualRevenueBreakdownByMonthController');
+
+
 const { ForecastedRevenueBreakdownByMonth } = require('../../models/database1/ForecastedRevenueBreakdownByMonth');
+const { ActualRevenueBreakdownByMonth } = require('../../models/database1/ActualRevenueBreakdownByMonth');
+
 
 
 const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
@@ -38,11 +43,19 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
                       whereClause.FK_WTT_Project_ID = project.id;
                   }
 
-                  const records = await ForecastedRevenueBreakdownByMonth.findOne({
+                  const forecastRecords = await ForecastedRevenueBreakdownByMonth.findOne({
                       where: whereClause,
                   });
 
-                  const formattedRecords = records ? (formatRevenueRecord(records)).monthValues.reduce((t, d) => t + d.value, 0) : 0;
+                  const actualRecords = await ActualRevenueBreakdownByMonth.findOne({
+                      where: whereClause,
+                  });
+
+                  const formattedForecastRecords = forecastRecords ? formatRevenueRecord(forecastRecords) : null;
+                  const formattedActualRecords = actualRecords ? formatActualRecord(actualRecords) : null;
+
+                  const forecast = formattedForecastRecords ? formattedForecastRecords.monthValues.reduce((total, record) => total + parseFloat(record.value), 0) : 0;
+                  const actual = formattedActualRecords ? formattedActualRecords.monthValues.reduce((total, record) => total + parseFloat(record.value), 0) : 0;
 
                   combinedData.push({
                       id: pc.id,
@@ -52,8 +65,8 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
                       customerName: customer ? customer.name : 'N/A',
                       FK_WTT_Project_ID: pc.FK_WTT_Project_ID,
                       projectName: project.name,
-                      forecast: formattedRecords,
-                      actual: pc.actual,
+                      forecast: forecast,
+                      actual: actual,
                       projectStatus: pc.projectStatus
                       // Add other fields as needed...
                   });
@@ -67,8 +80,8 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
                       customerName: 'N/A', // Default value for customer name
                       FK_WTT_Project_ID: pc.FK_WTT_Project_ID,
                       projectName: 'N/A', // Default value for project name
-                      forecast: "0", // Default value for forecast
-                      actual: "0", // Default value for actual
+                      forecast: 0, // Default value for forecast
+                      actual: 0, // Default value for actual
                       projectStatus: 'N/A'
                       // Add other default values as needed...
                   });
@@ -86,6 +99,87 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
       return res.status(500).json({ error: 'Server Error' });
   }
 };
+
+
+// const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
+//   try {
+//       const financialYear = await financialYearController.getAllFinancialYears2();
+//       const wttCustomers = await wttCustomerController.getAllWTTCustomers2();
+//       const wttProjects = await WTTProjectController.getAllProjects2();
+//       const projectsWithCost = await projectCostController.getAllProjectCosts2();
+//       const combinedData = [];
+
+//       for (let i = 0; i < projectsWithCost.length; i++) {
+//           const pc = projectsWithCost[i];
+
+//           // Find the associated Fyear
+//           const fyear = financialYear.find((fy) => parseInt(fy.id) === pc.FK_FinancialYear_ID);
+
+//           if (pc.FK_FinancialYear_ID) {
+//               // Find the associated project
+//               const project = wttProjects.find((p) => parseInt(p.id) === pc.FK_WTT_Project_ID);
+
+//               if (project) {
+//                   // If a project is found, continue to find the associated customer
+//                   const customer = wttCustomers.find((c) => c.id === project.FK_WTT_Customer_ID);
+//                   const whereClause = {
+//                       FK_FinancialYear_ID: pc.FK_FinancialYear_ID,
+//                   };
+
+//                   if (project.id) {
+//                       whereClause.FK_WTT_Project_ID = project.id;
+//                   }
+
+//                   const records = await ForecastedRevenueBreakdownByMonth.findOne({
+//                       where: whereClause,
+//                   });
+
+//                   const formattedRecords = records ? formatRevenueRecord(records) : null;
+//                   const forecast = formattedRecords ? formattedRecords.monthValues.reduce((total, record) => total + parseFloat(record.value), 0) : 0;
+
+//                   combinedData.push({
+//                       id: pc.id,
+//                       FK_FinancialYear_ID: pc.FK_FinancialYear_ID,
+//                       financialYearName: fyear ? fyear.name : 'N/A',
+//                       FK_WTT_Customer_ID: customer ? customer.id : 'N/A',
+//                       customerName: customer ? customer.name : 'N/A',
+//                       FK_WTT_Project_ID: pc.FK_WTT_Project_ID,
+//                       projectName: project.name,
+//                       forecast: forecast,
+//                       actual: pc.actual,
+//                       projectStatus: pc.projectStatus
+//                       // Add other fields as needed...
+//                   });
+//               } else {
+//                   // Handle the case where no matching project is found
+//                   combinedData.push({
+//                       id: pc.id,
+//                       FK_FinancialYear_ID: pc.FK_FinancialYear_ID,
+//                       financialYearName: fyear ? fyear.name : 'N/A',
+//                       FK_WTT_Customer_ID: 'N/A',
+//                       customerName: 'N/A', // Default value for customer name
+//                       FK_WTT_Project_ID: pc.FK_WTT_Project_ID,
+//                       projectName: 'N/A', // Default value for project name
+//                       forecast: 0, // Default value for forecast
+//                       actual: 0, // Default value for actual
+//                       projectStatus: 'N/A'
+//                       // Add other default values as needed...
+//                   });
+//               }
+//           } else {
+//               // Handle the case where no matching financial year is found
+//               console.error('Financial year not found for ID:', pc.FK_FinancialYear_ID);
+//           }
+//       }
+
+//       return res.json(combinedData);
+
+//   } catch (error) {
+//       console.error(error);
+//       return res.status(500).json({ error: 'Server Error' });
+//   }
+// };
+
 
 
 // const getAllProjectsCostWithCorrespondingNames = async (req, res) => {

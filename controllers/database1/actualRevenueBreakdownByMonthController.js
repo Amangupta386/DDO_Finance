@@ -1,5 +1,6 @@
-const { ActualRevenueBreakdownByMonth } = require('../../models/database1/ActualRevenueBreakdownByMonth');
+const { ActualRevenueBreakdownByMonth } = require('../../models/database1/ActualRevenueBreakdownByMonth'); // Adjust the path accordingly
 
+// Create a new record
 const createRecord = async (req, res) => {
   try {
     const newRecord = await ActualRevenueBreakdownByMonth.create(req.body);
@@ -10,10 +11,11 @@ const createRecord = async (req, res) => {
   }
 };
 
+// Get all records
 const getAllRecords = async (req, res) => {
   try {
     const { financialYearId, projectId } = req.query;
-    if(!financialYearId){
+    if (!financialYearId) {
       throw new Error("financialYearId is missing in the query params");
     }
     const whereClause = {
@@ -25,36 +27,12 @@ const getAllRecords = async (req, res) => {
     const records = await ActualRevenueBreakdownByMonth.findAll({
       where: whereClause,
     });
-    const formattedRecords = records.map(record => ({
-      id: record.id,
-      createdAt: record.createdAt,
-      updatedAt: record.updatedAt,
-      sort: record.sort,
-      createdById: record.createdById,
-      updatedById: record.updatedById,
-      FK_FinancialYear_ID: record.FK_FinancialYear_ID,
-      FK_WTT_Project_ID: record.FK_WTT_Project_ID,
-      monthValues: [
-        { label: 'April', value: record.april, commentValue: record.aprilComment },
-        { label: 'May', value: record.may, commentValue: record.mayComment },
-        { label: 'June', value: record.june, commentValue: record.juneComment },
-        { label: 'July', value: record.july, commentValue: record.julyComment },
-        { label: 'August', value: record.august, commentValue: record.augustComment },
-        { label: 'September', value: record.september, commentValue: record.septemberComment },
-        { label: 'October', value: record.october, commentValue: record.octoberComment },
-        { label: 'November', value: record.november, commentValue: record.novemberComment },
-        { label: 'December', value: record.december, commentValue: record.decemberComment },
-        { label: 'January', value: record.january, commentValue: record.januaryComment },
-        { label: 'February', value: record.february, commentValue: record.februaryComment },
-        { label: 'March', value: record.march, commentValue: record.marchComment },
-      ],
-    }));
-
+    const formattedRecords = records.map(formatActualRecord);
     res.status(200).json(formattedRecords);
   } catch (error) {
     console.error(error);
-    res.status(400).json({ error: error.message }); 
-    }
+    res.status(400).json({ error: error.message });
+  }
 };
 
 const getRecordById = async (req, res) => {
@@ -64,32 +42,7 @@ const getRecordById = async (req, res) => {
     if (!record) {
       return res.status(404).json({ error: 'Record not found' });
     }
-
-    const formattedRecord = {
-      id: record.id,
-      createdAt: record.createdAt,
-      updatedAt: record.updatedAt,
-      sort: record.sort,
-      createdById: record.createdById,
-      updatedById: record.updatedById,
-      FK_FinancialYear_ID: record.FK_FinancialYear_ID,
-      FK_WTT_Project_ID: record.FK_WTT_Project_ID,
-      monthValues: [
-        { label: 'April', value: record.april, commentValue: record.aprilComment },
-        { label: 'May', value: record.may, commentValue: record.mayComment },
-        { label: 'June', value: record.june, commentValue: record.juneComment },
-        { label: 'July', value: record.july, commentValue: record.julyComment },
-        { label: 'August', value: record.august, commentValue: record.augustComment },
-        { label: 'September', value: record.september, commentValue: record.septemberComment },
-        { label: 'October', value: record.october, commentValue: record.octoberComment },
-        { label: 'November', value: record.november, commentValue: record.novemberComment },
-        { label: 'December', value: record.december, commentValue: record.decemberComment },
-        { label: 'January', value: record.january, commentValue: record.januaryComment },
-        { label: 'February', value: record.february, commentValue: record.februaryComment },
-        { label: 'March', value: record.march, commentValue: record.marchComment },
-      ],
-    };
-
+    const formattedRecord = formatActualRecord(record);
     res.status(200).json(formattedRecord);
   } catch (error) {
     console.error(error);
@@ -97,6 +50,35 @@ const getRecordById = async (req, res) => {
   }
 };
 
+// Helper function to format record
+const formatActualRecord = (record) => {
+  return {
+    id: record.id,
+    createdAt: record.createdAt,
+    updatedAt: record.updatedAt,
+    sort: record.sort,
+    createdById: record.createdById,
+    updatedById: record.updatedById,
+    FK_FinancialYear_ID: record.FK_FinancialYear_ID,
+    FK_WTT_Project_ID: record.FK_WTT_Project_ID,
+    monthValues: [
+      { label: 'April', value: record.april, commentValue: record.aprilComment },
+      { label: 'May', value: record.may, commentValue: record.mayComment },
+      { label: 'June', value: record.june, commentValue: record.juneComment },
+      { label: 'July', value: record.july, commentValue: record.julyComment },
+      { label: 'August', value: record.august, commentValue: record.augustComment },
+      { label: 'September', value: record.september, commentValue: record.septemberComment },
+      { label: 'October', value: record.october, commentValue: record.octoberComment },
+      { label: 'November', value: record.november, commentValue: record.novemberComment },
+      { label: 'December', value: record.december, commentValue: record.decemberComment },
+      { label: 'January', value: record.january, commentValue: record.januaryComment },
+      { label: 'February', value: record.february, commentValue: record.februaryComment },
+      { label: 'March', value: record.march, commentValue: record.marchComment },
+    ],
+  };
+};
+
+// Update a record by ID
 const updateRecord = async (req, res) => {
   const { id } = req.params;
   try {
@@ -116,6 +98,7 @@ const updateRecord = async (req, res) => {
   }
 };
 
+// Delete a record by ID
 const deleteRecord = async (req, res) => {
   const { id } = req.params;
   try {
@@ -140,4 +123,5 @@ module.exports = {
   getRecordById,
   updateRecord,
   deleteRecord,
+  formatActualRecord,
 };
