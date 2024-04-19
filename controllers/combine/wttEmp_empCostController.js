@@ -101,17 +101,15 @@ const uploadExcel = async (req, res) => {
       });
 
 
-      for (let i = 0; i < transformedData.length; i++) {
-        const resource = await ResourceCost.findOne({ where: { FK_WTT_Employee_ID: transformedData[i].FK_WTT_Employee_ID } });
-        if (resource) {
-            resource.monthlyCostComp1 = transformedData[i].monthlyCostComp1;
-            resource.monthlyCostComp2 = transformedData[i].monthlyCostComp2;
-            resource.monthlyCostComp3 = transformedData[i].monthlyCostComp3;
-            resource.monthlyCostComp4 = transformedData[i].monthlyCostComp4;
-            await resource.save();
-        }
-    }
-    
+   for(let i=0; i< transformedData; i++){
+    const resources = await ResourceCost.find((rc) => rc.FK_WTT_Employee_ID === transformedData[i].FK_WTT_Employee_ID);
+
+    resources.MonthlyCostComp1 = transformedData[i].monthlyCostComp1;
+    resources.MonthlyCostComp2 = transformedData[i].monthlyCostComp2;
+    resources.MonthlyCostComp3 = transformedData[i].monthlyCostComp3;
+    resources.MonthlyCostComp4 = transformedData[i].monthlyCostComp4;
+    // await resources.save();
+   }
 
       
       return res.status(200).json(res);
