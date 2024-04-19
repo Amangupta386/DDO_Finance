@@ -83,11 +83,12 @@ const uploadExcel = async (req, res) => {
       const sheet = workbook.Sheets[sheetName];
       const data = xlsx.utils.sheet_to_json(sheet);
 
-      const employees = await wttEmployeeController.getAllEmployees2();
+    //   const employees = await wttEmployeeController.getAllEmployees2();
     
       const transformedData = data.map(item => {
-        const emp = employees.find((emp) => emp.EmployeeCode === item.EmployeeId);
-        console.log(emp,'test 0');
+        console.log(item,'test');
+        const emp = employees.find((emp) => emp.EmployeeCode == item.EmployeeId);
+        // console.log(emp,'test 0');
           return {
               FK_WTT_Employee_ID: emp.FK_WTT_Employee_ID,
               monthlyCostComp1: item.MonthlyCostComp1,
