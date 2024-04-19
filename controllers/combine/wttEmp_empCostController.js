@@ -88,7 +88,7 @@ const uploadExcel = async (req, res) => {
       const transformedData = data.map(item => {
         console.log(item,'test');
         const emp = employees.find((emp) => emp.EmployeeCode == item.EmployeeId);
-        // console.log(emp,'test 0');
+        console.log(emp,'test 0');
           return {
               FK_WTT_Employee_ID: emp.FK_WTT_Employee_ID,
               monthlyCostComp1: item.MonthlyCostComp1,
