@@ -26,17 +26,15 @@ const getAllResourceCostWithNames = async (req, res) => {
   console.log('testjs');
     try {
         const employees = await wttEmployeeController.getAllEmployees2();
-        console.log(employees.length)
-        const resourceCosts = await resourceCostController.getAllResourceCosts2();
-        console.log(resourceCosts.length)
+        const resourceCosts  = await resourceCostController.getAllResourceCosts2();
         const designations = await designationController.getAllDesignations2();
-console.log(resourceCosts?.filter((rc)=>!!employees.find((emp) => rc.FK_WTT_Employee_ID === emp.id)))
-        const combinedData = resourceCosts?.filter((rc)=>!!employees.find((emp) => rc.FK_WTT_Employee_ID === emp.id)).map((rc) => {
-            const emp = employees.find((emp) => rc.FK_WTT_Employee_ID === emp.id);
+        
+        const combinedData = employees?.map((emp) => {
+            const resources = resourceCosts.find((rc) => rc.FK_WTT_Employee_ID === emp.id);
             const designation = designations.find((d) => d.id === emp.FK_WTT_Master_Emp_Designation_ID);
             const formattedJoiningDate = moment(emp.JoiningDate).format('DD/MM/YYYY');
-              const resources = rc;
-            if (emp) {       
+            
+            if (resources) {       
                 return {
                     id: resources.id,
                     employeeCode: emp.EmployeeCode,
@@ -73,58 +71,48 @@ console.log(resourceCosts?.filter((rc)=>!!employees.find((emp) => rc.FK_WTT_Empl
     }   
 }
 const uploadExcel = async (req, res) => {
-    try {
+  try {
       if (!req.file) {
-        return res.status(400).json({ error: 'No file uploaded' });
+          return res.status(400).json({ error: 'No file uploaded' });
       }
-  
+
       const file = req.file;
       const workbook = xlsx.read(file.buffer, { type: 'buffer' });
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
       const data = xlsx.utils.sheet_to_json(sheet);
-  
-      // Iterate through each row of data
-      for (const item of data) {
-        // Check if the record already exists in the resource table
-        const existingResource = await ResourceCost.findOne({
-          where: {
-            FK_WTT_Employee_ID: item.EmployeeId
-          }
-        });
-  
-        if (existingResource) {
-          // If the record exists, update it
-          await existingResource.update({
-            monthlyCostComp1: item.MonthlyCostComp1,
-            monthlyCostComp2: item.MonthlyCostComp2,
-            monthlyCostComp3: item.MonthlyCostComp3,
-            monthlyCostComp4: item.MonthlyCostComp4,
-            createdById: req.user.id,
-            totalMonthlyCost: 100000 // Update any other fields if needed
-          });
-        } else {
-          // If the record does not exist, create a new one
-          await ResourceCost.create({
-            FK_WTT_Employee_ID: item.EmployeeId,
-            monthlyCostComp1: item.MonthlyCostComp1,
-            monthlyCostComp2: item.MonthlyCostComp2,
-            monthlyCostComp3: item.MonthlyCostComp3,
-            monthlyCostComp4: item.MonthlyCostComp4,
-            createdById: req.user.id,
-            totalMonthlyCost: 100000 // Set default values or modify as needed
-          });
-        }
-      }
-  
-      // If all records are processed successfully, send a success response
-      return res.status(200).json({ message: 'Records updated/created successfully' });
-    } catch (error) {
+
+      const transformedData = data.map(item => {
+          return {
+            //   FK_WTT_Employee_ID: +(item.EmployeeId),
+            //   monthlyCostComp1: item.MonthlyCostComp1,
+            //   monthlyCostComp2: item.MonthlyCostComp2,
+            //   monthlyCostComp3: item.MonthlyCostComp3,
+            //   monthlyCostComp4: item.MonthlyCostComp4,
+            //   createdById: req.user.id,
+            //   totalMonthlyCost: 100000
+            //   {
+                "id": 20,
+                "FK_WTT_Employee_ID": 173,
+                "monthlyCostComp1": "456",
+                "monthlyCostComp2": "0",
+                "monthlyCostComp3": "0",
+                "monthlyCostComp4": "00",
+                "createdById": 7
+            // }
+
+              
+          };
+      });
+
+    const ress =   await ResourceCost.bulkCreate(transformedData);
+      
+      return res.status(200).json(ress);
+  } catch (error) {
       console.error("Error during uploadExcel:", error);
       return res.status(500).json({ error: 'Server Error' });
-    }
   }
-  
+}
 
 
 module.exports = {
