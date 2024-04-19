@@ -102,8 +102,9 @@ const uploadExcel = async (req, res) => {
 
 
    for(let i=0; i< transformedData.length; i++){
-    const resources = await ResourceCost.findOne({FK_WTT_Employee_ID: transformedData[i].FK_WTT_Employee_ID});
-
+    const resources = await ResourceCost.findOne({where:{FK_WTT_Employee_ID: transformedData[i].FK_WTT_Employee_ID}});
+    if(!resources)
+    return;
     resources.MonthlyCostComp1 = transformedData[i].monthlyCostComp1;
     resources.MonthlyCostComp2 = transformedData[i].monthlyCostComp2;
     resources.MonthlyCostComp3 = transformedData[i].monthlyCostComp3;
@@ -112,10 +113,13 @@ const uploadExcel = async (req, res) => {
    }
 
       
-      return res.status(200).json(res);
+      return res.status(200).json(
+        
+        {message:"Updated Data"}
+      );
   } catch (error) {
       console.error("Error during uploadExcel:", error);
-      return res.status(500).json({ error: error});
+      return res.status(500).send({ error: error});
   }
 }
 
