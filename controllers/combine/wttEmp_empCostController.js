@@ -102,7 +102,7 @@ const uploadExcel = async (req, res) => {
 
 
    for(let i=0; i< transformedData.length; i++){
-    const resources = await ResourceCost.find((rc) => rc.FK_WTT_Employee_ID === transformedData[i].FK_WTT_Employee_ID);
+    const resources = await ResourceCost.findOne({FK_WTT_Employee_ID: transformedData[i].FK_WTT_Employee_ID});
 
     resources.MonthlyCostComp1 = transformedData[i].monthlyCostComp1;
     resources.MonthlyCostComp2 = transformedData[i].monthlyCostComp2;
