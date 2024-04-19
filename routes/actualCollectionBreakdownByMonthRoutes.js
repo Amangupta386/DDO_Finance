@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const actualCollectionBreakdownByMonthController = require('../controllers/database1/actualCollectionBreakdownByMonthController');
+
+router.route('/dashboard').get(actualCollectionBreakdownByMonthController.getDashboardActualCollection);
 router.route('/')
   .post(actualCollectionBreakdownByMonthController.createRecord)
   .get(actualCollectionBreakdownByMonthController.getAllRecords);
