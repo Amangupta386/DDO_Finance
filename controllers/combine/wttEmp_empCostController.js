@@ -31,8 +31,7 @@ const getAllResourceCostWithNames = async (req, res) => {
             const resources = resourceCosts.find((rc) => rc.FK_WTT_Employee_ID === emp.id);
             const designation = designations.find((d) => d.id === emp.FK_WTT_Master_Emp_Designation_ID);
             const formattedJoiningDate = moment(emp.JoiningDate).format('DD/MM/YYYY');
-
-
+            
             
             if (resources) {       
                 return {
@@ -86,12 +85,11 @@ const uploadExcel = async (req, res) => {
 
       const employees = await wttEmployeeController.getAllEmployees2();
     
-    
-    
       const transformedData = data.map(item => {
         const emp = employees.find((emp) => emp.EmployeeCode === item.EmployeeId);
+        console.log(emp,'test 0');
           return {
-              FK_WTT_Employee_ID: +(emp.FK_WTT_Employee_ID),
+              FK_WTT_Employee_ID: emp.FK_WTT_Employee_ID,
               monthlyCostComp1: item.MonthlyCostComp1,
               monthlyCostComp2: item.MonthlyCostComp2,
               monthlyCostComp3: item.MonthlyCostComp3,
