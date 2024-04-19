@@ -141,6 +141,8 @@ const getDashboardForecastedRevenue = async (req, res) => {
       where: filter,
     });
 
+    console.log(JSON.parse(JSON.stringify(wttProjects)));
+
     const whereClause = {
     };
   if(financialYearId){
