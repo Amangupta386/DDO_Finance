@@ -96,13 +96,22 @@ const uploadExcel = async (req, res) => {
               monthlyCostComp3: item.MonthlyCostComp3,
               monthlyCostComp4: item.MonthlyCostComp4,
               createdById: req.user.id,
-              totalMonthlyCost: 100000
+              totalMonthlyCost: 0
           };
       });
 
-   const ress =   await ResourceCost.bulkCreate(transformedData);
+
+   for(let i=0; i< transformedData; i++){
+    const resources = await ResourceCost.find((rc) => rc.FK_WTT_Employee_ID === transformedData.FK_WTT_Employee_ID);
+    resources.MonthlyCostComp1 = transformedData[i].monthlyCostComp1;
+    resources.MonthlyCostComp2 = transformedData[i].monthlyCostComp2;
+    resources.MonthlyCostComp3 = transformedData[i].monthlyCostComp3;
+    resources.MonthlyCostComp4 = transformedData[i].monthlyCostComp4;
+    await resources.save();
+   }
+
       
-      return res.status(200).json(ress);
+      return res.status(200).json(res);
   } catch (error) {
       console.error("Error during uploadExcel:", error);
       return res.status(500).json({ error: error});
