@@ -71,37 +71,58 @@ const getAllResourceCostWithNames = async (req, res) => {
     }   
 }
 const uploadExcel = async (req, res) => {
-  try {
+    try {
       if (!req.file) {
-          return res.status(400).json({ error: 'No file uploaded' });
+        return res.status(400).json({ error: 'No file uploaded' });
       }
-
+  
       const file = req.file;
       const workbook = xlsx.read(file.buffer, { type: 'buffer' });
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
       const data = xlsx.utils.sheet_to_json(sheet);
-
-      const transformedData = data.map(item => {
-          return {
-              FK_WTT_Employee_ID: +(item.EmployeeId),
-              monthlyCostComp1: item.MonthlyCostComp1,
-              monthlyCostComp2: item.MonthlyCostComp2,
-              monthlyCostComp3: item.MonthlyCostComp3,
-              monthlyCostComp4: item.MonthlyCostComp4,
-              createdById: req.user.id,
-              totalMonthlyCost: 100000
-          };
-      });
-
-   const ress =   await ResourceCost.bulkCreate(transformedData);
-      
-      return res.status(200).json(ress);
-  } catch (error) {
+  
+      // Iterate through each row of data
+      for (const item of data) {
+        // Check if the record already exists in the resource table
+        const existingResource = await ResourceCost.findOne({
+          where: {
+            FK_WTT_Employee_ID: item.EmployeeId
+          }
+        });
+  
+        if (existingResource) {
+          // If the record exists, update it
+          await existingResource.update({
+            monthlyCostComp1: item.MonthlyCostComp1,
+            monthlyCostComp2: item.MonthlyCostComp2,
+            monthlyCostComp3: item.MonthlyCostComp3,
+            monthlyCostComp4: item.MonthlyCostComp4,
+            createdById: req.user.id,
+            totalMonthlyCost: 100000 // Update any other fields if needed
+          });
+        } else {
+          // If the record does not exist, create a new one
+          await ResourceCost.create({
+            FK_WTT_Employee_ID: item.EmployeeId,
+            monthlyCostComp1: item.MonthlyCostComp1,
+            monthlyCostComp2: item.MonthlyCostComp2,
+            monthlyCostComp3: item.MonthlyCostComp3,
+            monthlyCostComp4: item.MonthlyCostComp4,
+            createdById: req.user.id,
+            totalMonthlyCost: 100000 // Set default values or modify as needed
+          });
+        }
+      }
+  
+      // If all records are processed successfully, send a success response
+      return res.status(200).json({ message: 'Records updated/created successfully' });
+    } catch (error) {
       console.error("Error during uploadExcel:", error);
       return res.status(500).json({ error: 'Server Error' });
+    }
   }
-}
+  
 
 
 module.exports = {
