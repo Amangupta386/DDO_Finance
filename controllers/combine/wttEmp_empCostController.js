@@ -108,10 +108,11 @@ const uploadExcel = async (req, res) => {
           console.error(`Resource not found for FK_WTT_Employee_ID: ${transformedData[i].FK_WTT_Employee_ID}`);
           continue; // Skip to the next iteration of the loop
         }
-        resources.MonthlyCostComp1 = transformedData[i].monthlyCostComp1;
-        resources.MonthlyCostComp2 = transformedData[i].monthlyCostComp2;
-        resources.MonthlyCostComp3 = transformedData[i].monthlyCostComp3;
-        resources.MonthlyCostComp4 = transformedData[i].monthlyCostComp4;
+        resource['monthlyCostComp1'] = transformedData[i].monthlyCostComp1;
+        resources['monthlyCostComp2'] = transformedData[i].monthlyCostComp2;
+        resources['monthlyCostComp3'] = transformedData[i].monthlyCostComp3;
+        resources['monthlyCostComp4'] = transformedData[i].monthlyCostComp4;
+        console.log(resources);
         await resources.save();
       }
   
