@@ -91,7 +91,6 @@ const uploadExcel = async (req, res) => {
             //   monthlyCostComp4: item.MonthlyCostComp4,
             //   createdById: req.user.id,
             //   totalMonthlyCost: 100000
-
             //   {
                 "id": 20,
                 "FK_WTT_Employee_ID": 173,
@@ -100,7 +99,7 @@ const uploadExcel = async (req, res) => {
                 "monthlyCostComp3": "0",
                 "monthlyCostComp4": "00",
                 "createdById": 7
-            }
+            // }
 
               
           };
