@@ -100,7 +100,7 @@ const uploadExcel = async (req, res) => {
           createdById: req.user.id,
           totalMonthlyCost: 0
         };
-      }).filter(Boolean); // Remove null values from the array
+      }); // Remove null values from the array
   
       for (let i = 0; i < transformedData.length; i++) {
         const resources = await ResourceCost.findOne({ where: { FK_WTT_Employee_ID: transformedData[i].FK_WTT_Employee_ID } });
@@ -122,62 +122,6 @@ const uploadExcel = async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
   }
-  
-
-// const uploadExcel = async (req, res) => {
-//   try {
-//       if (!req.file) {
-//           return res.status(400).json({ error: 'No file uploaded' });
-//       }
-
-//       const file = req.file;
-//       const workbook = xlsx.read(file.buffer, { type: 'buffer' });
-//       const sheetName = workbook.SheetNames[0];
-//       const sheet = workbook.Sheets[sheetName];
-//       const data = xlsx.utils.sheet_to_json(sheet);
-
-//       const employees = await wttEmployeeController.getAllEmployees2();
-    
-//       const transformedData = data.map(item => {
-//         console.log(item,'test');
-//         const emp = employees.find((emp) => emp.EmployeeCode == item.EmployeeId);
-//         console.log(emp,'test 0');
-//           return {
-//               FK_WTT_Employee_ID: emp.id,
-//               monthlyCostComp1: item.MonthlyCostComp1,
-//               monthlyCostComp2: item.MonthlyCostComp2,
-//               monthlyCostComp3: item.MonthlyCostComp3,
-//               monthlyCostComp4: item.MonthlyCostComp4,
-//               createdById: req.user.id,
-//               totalMonthlyCost: 0
-//           };
-//       });
-
-
-//       for (let i = 0; i < transformedData.length; i++) {
-//         const resources = await ResourceCost.findOne({ where: { FK_WTT_Employee_ID: transformedData[i].FK_WTT_Employee_ID } });
-//         if (!resources) {
-//             console.error(`Resource not found for FK_WTT_Employee_ID: ${transformedData[i].FK_WTT_Employee_ID}`);
-//             continue; // Skip to the next iteration of the loop
-//         }
-//         resources.MonthlyCostComp1 = transformedData[i].monthlyCostComp1;
-//         resources.MonthlyCostComp2 = transformedData[i].monthlyCostComp2;
-//         resources.MonthlyCostComp3 = transformedData[i].monthlyCostComp3;
-//         resources.MonthlyCostComp4 = transformedData[i].monthlyCostComp4;
-//         await resources.save();
-//     }
-    
-
-      
-//       return res.status(200).json(
-        
-//         {message:"Updated Data"}
-//       );
-//   } catch (error) {
-//       console.error("Error during uploadExcel:", error);
-//       return res.status(500).send({ error: error});
-//   }
-// }
 
 
 module.exports = {
