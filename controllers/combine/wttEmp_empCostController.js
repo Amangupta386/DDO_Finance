@@ -19,11 +19,9 @@ const storage = multer.diskStorage({
     }
 });
 
-// Create multer instance with disk storage
-const upload = multer({ storage: storage });
 
 const getAllResourceCostWithNames = async (req, res) => {
-  console.log('testjs');
+    console.log('uuuuu');
     try {
         const employees = await wttEmployeeController.getAllEmployees2();
         const resourceCosts  = await resourceCostController.getAllResourceCosts2();
@@ -33,6 +31,8 @@ const getAllResourceCostWithNames = async (req, res) => {
             const resources = resourceCosts.find((rc) => rc.FK_WTT_Employee_ID === emp.id);
             const designation = designations.find((d) => d.id === emp.FK_WTT_Master_Emp_Designation_ID);
             const formattedJoiningDate = moment(emp.JoiningDate).format('DD/MM/YYYY');
+
+
             
             if (resources) {       
                 return {
@@ -70,6 +70,8 @@ const getAllResourceCostWithNames = async (req, res) => {
         return res.status(500).json({ error: 'Server Error' });
     }   
 }
+
+
 const uploadExcel = async (req, res) => {
   try {
       if (!req.file) {
@@ -82,9 +84,14 @@ const uploadExcel = async (req, res) => {
       const sheet = workbook.Sheets[sheetName];
       const data = xlsx.utils.sheet_to_json(sheet);
 
+      const employees = await wttEmployeeController.getAllEmployees2();
+    
+    
+    
       const transformedData = data.map(item => {
+        const emp = employees.find((emp) => emp.EmployeeCode === item.EmployeeId);
           return {
-              FK_WTT_Employee_ID: +(item.EmployeeId),
+              FK_WTT_Employee_ID: +(emp.FK_WTT_Employee_ID),
               monthlyCostComp1: item.MonthlyCostComp1,
               monthlyCostComp2: item.MonthlyCostComp2,
               monthlyCostComp3: item.MonthlyCostComp3,
