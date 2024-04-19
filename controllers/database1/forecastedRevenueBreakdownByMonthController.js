@@ -149,8 +149,11 @@ const getDashboardForecastedRevenue = async (req, res) => {
       
       whereClause.FK_FinancialYear_ID= +financialYearId;
   }
+
     if (wttProjects.length) {
       whereClause.FK_WTT_Project_ID = {[Op.in]: wttProjects.map(p=> p.id)};
+    }else{
+      return  res.status(200).json([]);
     }
 
     const records = await ForecastedRevenueBreakdownByMonth.findAll({
