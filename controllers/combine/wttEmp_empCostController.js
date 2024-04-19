@@ -23,17 +23,16 @@ const storage = multer.diskStorage({
 const getAllResourceCostWithNames = async (req, res) => {
     console.log('uuuuu');
     try {
-        const employees = await wttEmployeeController.getAllEmployees2();
-        const resourceCosts  = await resourceCostController.getAllResourceCosts2();
-        const designations = await designationController.getAllDesignations2();
+      const employees = await wttEmployeeController.getAllEmployees2();
+      const resourceCosts  = await resourceCostController.getAllResourceCosts2();
+      const designations = await designationController.getAllDesignations2();
 
-        const combinedData = employees?.map((emp) => {
-            const resources = resourceCosts.find((rc) => rc.FK_WTT_Employee_ID === emp.id);
-            const designation = designations.find((d) => d.id === emp.FK_WTT_Master_Emp_Designation_ID);
-            const formattedJoiningDate = moment(emp.JoiningDate).format('DD/MM/YYYY');
-            
-            
-            if (resources) {       
+      const combinedData = employees?.map((emp) => {
+          const resources = resourceCosts.find((rc) => rc.FK_WTT_Employee_ID === emp.id);
+          const designation = designations.find((d) => d.id === emp.FK_WTT_Master_Emp_Designation_ID);
+          const formattedJoiningDate = moment(emp.JoiningDate).format('DD/MM/YYYY');
+
+          if (resources) {       
                 return {
                     id: resources.id,
                     employeeCode: emp.EmployeeCode,
