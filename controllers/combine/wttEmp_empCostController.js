@@ -117,7 +117,7 @@ const uploadExcel = async (req, res) => {
   
       return res.status(200).json({ message: "Updated Data" });
     } catch (error) {
-      console.error("Error during uploadExcel:", error);
+      console.error("Error during uploadExcel:", error.message);
       return res.status(500).json({ error: error.message });
     }
   }
