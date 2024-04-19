@@ -83,7 +83,7 @@ const uploadExcel = async (req, res) => {
       const sheet = workbook.Sheets[sheetName];
       const data = xlsx.utils.sheet_to_json(sheet);
 
-    //   const employees = await wttEmployeeController.getAllEmployees2();
+      const employees = await wttEmployeeController.getAllEmployees2();
     
       const transformedData = data.map(item => {
         console.log(item,'test');
