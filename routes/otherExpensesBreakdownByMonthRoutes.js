@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const otherExpensesController = require('../controllers/database1/otherExpensesController');
 
+router.route('/dashboard').get(otherExpensesController.getDashboardOtherExpensesActual);
 router.route('/')
   // Create a new record
   .post(otherExpensesController.createOtherExpense)
