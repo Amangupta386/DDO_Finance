@@ -149,6 +149,9 @@ const getDashboardActualRevenue = async (req, res) => {
     if (wttProjects.length) {
       whereClause.FK_WTT_Project_ID = {[Op.in]: wttProjects.map(p=> p.id)};
     }
+  else{
+    return  res.status(200).json([]);
+  }
 
     const records = await ActualRevenueBreakdownByMonth.findAll({
       where: whereClause,
