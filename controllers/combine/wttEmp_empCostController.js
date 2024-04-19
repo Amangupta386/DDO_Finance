@@ -90,7 +90,7 @@ const uploadExcel = async (req, res) => {
         const emp = employees.find((emp) => emp.EmployeeCode == item.EmployeeId);
         console.log(emp,'test 0');
           return {
-              FK_WTT_Employee_ID: emp.FK_WTT_Employee_ID,
+              FK_WTT_Employee_ID: emp.id,
               monthlyCostComp1: item.MonthlyCostComp1,
               monthlyCostComp2: item.MonthlyCostComp2,
               monthlyCostComp3: item.MonthlyCostComp3,
