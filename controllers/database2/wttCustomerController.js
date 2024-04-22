@@ -25,7 +25,7 @@ exports.getAllWTTCustomers = async (req, res) => {
       isActive: 'true',
     };
 
-    const buId = req.params.buId; // Extracting buId from request parameters
+    const {buId} = req.query; // Extracting buId from request parameters
 
     if (buId) {
       // Add filter for business unit ID if provided
@@ -38,6 +38,7 @@ exports.getAllWTTCustomers = async (req, res) => {
 
       const customerIds = projects.map(project => project.FK_WTT_Customer_ID);
       filter.id = customerIds;
+      console.log(filter);
     }
 
     const wttCustomers = await WTTCustomer.findAll({
