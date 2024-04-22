@@ -17,7 +17,7 @@ const getOtherExpenses = async (req, res) => {
       }
     });
     // Send the formatted expenses as JSON response
-    const formattedRecords = records.map(formatOtherExpenseRecord);
+    const formattedRecords = expenses.map(formatOtherExpenseRecord);
     res.status(200).json(formattedRecords);
   } catch (error) {
     console.error(error);
