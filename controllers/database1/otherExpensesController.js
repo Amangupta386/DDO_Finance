@@ -27,7 +27,7 @@ const getOtherExpenses = async (req, res) => {
 
 
 
-const formatOtherExpenseRecord = (record) => {
+const formatOtherExpenseRecord = (expense) => {
   return {
     id: expense.id,
     createdAt: expense.createdAt,
