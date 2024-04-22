@@ -30,7 +30,7 @@ exports.getAllWTTCustomers = async (req, res) => {
     if (buId) {
       // Add filter for business unit ID if provided
       const projects = await WTTProject.findAll({
-        attributes: ['FK_WTT_Customer_ID'],
+        // attributes: ['FK_WTT_Customer_ID'],
         where: {
           FK_WTT_BusinessUnit_ID: buId,
         },
@@ -52,7 +52,7 @@ exports.getAllWTTCustomers = async (req, res) => {
   } catch (error) {
     console.error(error);
     // Send a 500 Internal Server Error response if an error occurs
-   return res.status(500).json({ error: 'Server Error' });
+   return res.status(500).send({ error: error });
   }
 };
 
