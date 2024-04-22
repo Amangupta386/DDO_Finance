@@ -4,7 +4,7 @@ const {ResourceCostForecastBreakdownByMonth} = require('../../models/database1/R
 // Create a new record
 const createRecord = async (req, res) => {
   try {
-    const newRecord = await ResourceCostForecastBreakdownByMonth.create(req.body);
+    const newRecord = await ResourceCostForecastBreakdownByMonth.create({...req.body, createdById: req.user.id});
     res.status(201).json(newRecord);
   } catch (error) {
     console.error(error);

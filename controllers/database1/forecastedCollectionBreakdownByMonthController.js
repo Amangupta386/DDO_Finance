@@ -4,7 +4,7 @@ const { WTTProject } = require('../../models/database2/wtt_project');
 const { Op } = require('sequelize');
 const createRecord = async (req, res) => {
   try {
-    const newRecord = await ForecastedCollectionBreakdownByMonth.create(req.body);
+    const newRecord = await ForecastedCollectionBreakdownByMonth.create({...req.body, createdById: req.user.id});
     res.status(201).json(newRecord);
   } catch (error) {
     console.error(error);

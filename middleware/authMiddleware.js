@@ -21,6 +21,8 @@ const authenticateJWT = (req, res, next) => {
     }
 
     req.user = user;
+    if( req.body )
+    req.body = {...req.body, updatedById: req.user.id};
     next();
   });
 };

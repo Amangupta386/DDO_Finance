@@ -79,7 +79,7 @@ const formatOtherExpenseRecord = (expense) => {
 // POST API Controller Function
 const createOtherExpense = async (req, res) => {
   try {
-    const newExpense = await OtherExpensesActualBreakdownByMonth.create(req.body);
+    const newExpense = await OtherExpensesActualBreakdownByMonth.create({...req.body, createdById: req.user.id});
     res.status(201).json(newExpense);
   } catch (error) {
     console.error(error);
