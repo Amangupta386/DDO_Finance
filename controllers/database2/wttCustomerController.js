@@ -22,7 +22,7 @@ exports.createWTTCustomer = async (req, res) => {
 exports.getAllWTTCustomers = async (req, res) => {
   try {
     let filter = {
-      isActive: true,
+      isActive: 'true',
     };
 
     const buId = req.params.buId; // Extracting buId from request parameters
