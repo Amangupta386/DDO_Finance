@@ -5,6 +5,9 @@ const router = express.Router();
 const resourceCostActualBreakdownByMonthController = require('../controllers/database1/resourceCostActualBreakdownByMonthController');
 const wttEmp_resourceCostActualBreakdownController = require('../controllers/combine/wttEmp_resourceActualCostMonthlyBreakdownController');
 
+
+router.route('/dashboard').get(resourceCostActualBreakdownByMonthController.getDashboardResourceCostActual);
+
 router.route('/')
   .post(wttEmp_resourceCostActualBreakdownController.updateAllResourceCostWithProjectId)
   .get(resourceCostActualBreakdownByMonthController.getAllRecords);
