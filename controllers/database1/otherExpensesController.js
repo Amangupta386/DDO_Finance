@@ -16,41 +16,44 @@ const getOtherExpenses = async (req, res) => {
        
       }
     });
-
-    // Format the response
-    const formattedExpenses = expenses.map(expense => ({
-      id: expense.id,
-      createdAt: expense.createdAt,
-      updatedAt: expense.updatedAt,
-      sort: expense.sort,
-      createdById: expense.createdById,
-      updatedById: expense.updatedById,
-      FK_FinancialYear_ID: expense.FK_FinancialYear_ID,
-      FK_WTT_Project_ID: expense.FK_WTT_Project_ID,
-      FK_ExpenseCategory_ID: expense.FK_ExpenseCategory_ID,
-      parentId: expense.parentId,
-      monthValues: [
-        { label: 'April', value: expense.april, commentValue: expense.aprilComment },
-        { label: 'May', value: expense.may, commentValue: expense.mayComment },
-        { label: 'June', value: expense.june, commentValue: expense.juneComment },
-        { label: 'July', value: expense.july, commentValue: expense.julyComment },
-        { label: 'August', value: expense.august, commentValue: expense.augustComment },
-        { label: 'September', value: expense.september, commentValue: expense.septemberComment },
-        { label: 'October', value: expense.october, commentValue: expense.octoberComment },
-        { label: 'November', value: expense.november, commentValue: expense.novemberComment },
-        { label: 'December', value: expense.december, commentValue: expense.decemberComment },
-        { label: 'January', value: expense.january, commentValue: expense.januaryComment },
-        { label: 'February', value: expense.february, commentValue: expense.februaryComment },
-        { label: 'March', value: expense.march, commentValue: expense.marchComment },
-      ],
-    }));
-
     // Send the formatted expenses as JSON response
-    res.status(200).json(formattedExpenses);
+    const formattedRecords = records.map(formatOtherExpenseRecord);
+    res.status(200).json(formattedRecords);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(400).json({ error: error.message }); 
   }
+};
+
+
+
+const formatOtherExpenseRecord = (record) => {
+  return {
+    id: expense.id,
+    createdAt: expense.createdAt,
+    updatedAt: expense.updatedAt,
+    sort: expense.sort,
+    createdById: expense.createdById,
+    updatedById: expense.updatedById,
+    FK_FinancialYear_ID: expense.FK_FinancialYear_ID,
+    FK_WTT_Project_ID: expense.FK_WTT_Project_ID,
+    FK_ExpenseCategory_ID: expense.FK_ExpenseCategory_ID,
+    parentId: expense.parentId,
+    monthValues: [
+      { label: 'April', value: expense.april, commentValue: expense.aprilComment },
+      { label: 'May', value: expense.may, commentValue: expense.mayComment },
+      { label: 'June', value: expense.june, commentValue: expense.juneComment },
+      { label: 'July', value: expense.july, commentValue: expense.julyComment },
+      { label: 'August', value: expense.august, commentValue: expense.augustComment },
+      { label: 'September', value: expense.september, commentValue: expense.septemberComment },
+      { label: 'October', value: expense.october, commentValue: expense.octoberComment },
+      { label: 'November', value: expense.november, commentValue: expense.novemberComment },
+      { label: 'December', value: expense.december, commentValue: expense.decemberComment },
+      { label: 'January', value: expense.january, commentValue: expense.januaryComment },
+      { label: 'February', value: expense.february, commentValue: expense.februaryComment },
+      { label: 'March', value: expense.march, commentValue: expense.marchComment },
+    ],
+  };
 };
 
 
@@ -143,7 +146,7 @@ const getDashboardOtherExpensesActual = async (req, res) => {
       where: whereClause,
     });
 
-    const formattedRecords = records.map(formattedExpenses);
+    const formattedRecords = records.map(formatOtherExpenseRecord);
     const data = formattedRecords[0]; 
     formattedRecords.slice(1).forEach((dataChild)=>{
   
@@ -165,5 +168,6 @@ module.exports = {
   getOtherExpenses,
   createOtherExpense,
   updateOtherExpense,
+  formatOtherExpenseRecord,
   getDashboardOtherExpensesActual
 };
