@@ -8,23 +8,25 @@ const getOtherExpenses = async (req, res) => {
   try {
     const { financialYearId, projectId} = req.query;
 
-    // Retrieve expenses from the database
+    if(!financialYearId){
+      throw new Error("financialYearId is missing in the query params");
+    }
+    const whereClause = {
+      FK_FinancialYear_ID: financialYearId,
+    };
+    if (projectId) {
+      whereClause.FK_WTT_Project_ID = projectId;
+    }
     const expenses = await OtherExpensesActualBreakdownByMonth.findAll({
-      where: {
-        FK_FinancialYear_ID: financialYearId,
-        FK_WTT_Project_ID:projectId,
-       
-      }
+      where: whereClause,
     });
-    // Send the formatted expenses as JSON response
     const formattedRecords = expenses.map(formatOtherExpenseRecord);
     res.status(200).json(formattedRecords);
   } catch (error) {
     console.error(error);
-    res.status(400).json({ error: error.message }); 
+    res.status(400).json({ error: error.message });   
   }
 };
-
 
 
 const formatOtherExpenseRecord = (expense) => {
