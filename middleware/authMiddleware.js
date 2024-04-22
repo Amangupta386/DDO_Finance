@@ -22,7 +22,7 @@ const authenticateJWT = (req, res, next) => {
 
     req.user = user;
     if( req.body )
-    req.body = {...req.body, updatedById: req.user.id};
+    req.body = {...req.body, updatedById: req.user.id,updatedAt:new Date()};
     next();
   });
 };

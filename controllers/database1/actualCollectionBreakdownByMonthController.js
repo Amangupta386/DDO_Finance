@@ -4,7 +4,7 @@ const { Op } = require('sequelize');
 
 const createRecord = async (req, res) => {
   try {
-    const newRecord = await ActualCollectionBreakdownByMonth.create({...req.body, createdById: req.user.id});
+    const newRecord = await ActualCollectionBreakdownByMonth.create({...req.body, createdById: req.user.id,createdAt:new Date()});
     res.status(201).json(newRecord);
   } catch (error) {
     console.error(error);
