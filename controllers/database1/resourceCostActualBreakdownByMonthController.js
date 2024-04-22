@@ -1,5 +1,8 @@
 // controllers/resourceCostActualBreakdownByMonthController.js
 const {ResourceCostActualBreakdownByMonth} = require('../../models/database1/ResourceCostActualBreakdownByMonth');
+const { WTTProject } = require('../../models/database2/wtt_project');
+const { Op } = require('sequelize');
+
 const createRecord = async (req, res) => {
   try {
     const newRecord = await ResourceCostActualBreakdownByMonth.create(req.body);
@@ -160,6 +163,64 @@ const deleteRecord = async (req, res) => {
   }
 };
 
+
+const getDashboardResourceCostActual = async (req, res) => {
+  try {
+    const { financialYearId, projectId, buId, clientId } = req.query;
+    const filter = {};
+    if (clientId) {
+      filter['FK_WTT_Customer_ID'] = clientId;
+    }
+
+    if (buId) {
+      filter['FK_WTT_BusinessUnit_ID'] = buId;
+    }
+    if (projectId) {
+      filter['id'] = projectId;
+    }
+
+    const wttProjects = await WTTProject.findAll({
+      order: [['id', 'ASC']],
+      where: filter,
+    });
+
+    console.log(JSON.parse(JSON.stringify(wttProjects)));
+
+    const whereClause = {
+    };
+  if(financialYearId){
+      
+      whereClause.FK_FinancialYear_ID= +financialYearId;
+  }
+
+    if (wttProjects.length) {
+      whereClause.FK_WTT_Project_ID = {[Op.in]: wttProjects.map(p=> p.id)};
+    }else{
+      return  res.status(200).json([]);
+    }
+
+    const records = await ResourceCostActualBreakdownByMonth.findAll({
+      where: whereClause,
+    });
+
+    const formattedRecords = records.map(formatResourceCostRecord);
+    const data = formattedRecords[0]; 
+    formattedRecords.slice(1).forEach((dataChild)=>{
+  
+      data.monthValues = data.monthValues.map((d, i)=> {
+        if(d)
+         d.value = (+d.value) + (+(dataChild.monthValues[i].value));
+        return d;
+      });
+    });
+
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   createRecord,
   getAllRecords,
@@ -169,4 +230,5 @@ module.exports = {
   updateRecord,
   deleteRecord,
   getResourceCostByEmployeeId,
+  getDashboardResourceCostActual
 };
