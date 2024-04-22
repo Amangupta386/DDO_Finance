@@ -1,5 +1,6 @@
 const { WTTCustomer } = require('../../models/database2/wtt_cutomer'); 
 const { validationResult } = require('express-validator');
+const { WTTProject } = require('../../models/database2/wtt_project');
 
 // Create a new WTT Customer record
 exports.createWTTCustomer = async (req, res) => {
