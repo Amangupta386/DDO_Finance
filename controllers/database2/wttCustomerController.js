@@ -18,20 +18,59 @@ exports.createWTTCustomer = async (req, res) => {
   }
 };
 
-// Get all WTT Customers
 exports.getAllWTTCustomers = async (req, res) => {
   try {
+    let filter = {
+      isActive: true,
+    };
+
+    const buId = req.params.buId; // Extracting buId from request parameters
+
+    if (buId) {
+      // Add filter for business unit ID if provided
+      const projects = await WTTProject.findAll({
+        attributes: ['FK_WTT_Customer_ID'],
+        where: {
+          FK_WTT_BusinessUnit_ID: buId,
+        },
+      });
+
+      const customerIds = projects.map(project => project.FK_WTT_Customer_ID);
+      filter.id = customerIds;
+    }
+
     const wttCustomers = await WTTCustomer.findAll({
+      where: filter,
       order: [
         ['id', 'ASC'], // Order by id in ascending order
       ],
     });
+
+    // Send the fetched customers as JSON response
     return res.status(200).json(wttCustomers);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: 'Server Error' });
+    // Send a 500 Internal Server Error response if an error occurs
+   return res.status(500).json({ error: 'Server Error' });
   }
 };
+
+
+
+// // Get all WTT Customers
+// exports.getAllWTTCustomers = async (req, res) => {
+//   try {
+//     const wttCustomers = await WTTCustomer.findAll({
+//       order: [
+//         ['id', 'ASC'], // Order by id in ascending order
+//       ],
+//     });
+//     return res.status(200).json(wttCustomers);
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ error: 'Server Error' });
+//   }
+// };
 
 exports.getAllWTTCustomers2 = async (req, res) => {
   try {
