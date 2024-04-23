@@ -160,14 +160,19 @@ const getDashboardOtherExpensesActual = async (req, res) => {
     });
 
     const formattedRecords = records.map(formatOtherExpenseRecord);
-    const data = formattedRecords[0]; 
-    formattedRecords.slice(1).forEach((dataChild)=>{
-  
-      data.monthValues = data.monthValues.map((d, i)=> {
-        if(d)
-         d.value = (+d.value) + (+(dataChild.monthValues[i].value));
-        return d;
-      });
+    const data = []; 
+    formattedRecords.forEach((dataChild)=>{
+      const child = data.find((ch)=>ch.parentId == dataChild.parentId);
+      if(child){
+        child.monthValues = child.monthValues.map((d, i)=> {
+          if(d)
+           d.value = (+d.value) + (+(dataChild.monthValues[i].value));
+          return d;
+        });
+      }else{
+        data.push(dataChild);
+      }
+      
     });
 
     res.status(200).json(data);
