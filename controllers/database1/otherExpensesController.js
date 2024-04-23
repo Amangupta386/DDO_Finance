@@ -109,13 +109,17 @@ const updateOtherExpense = async (req, res) => {
   }
 };
 
-const { Op } = require('sequelize');
+
+
+
+
+
+
 
 const getDashboardOtherExpensesActual = async (req, res) => {
   try {
-    const { financialYearId, projectId, buId, clientId } = req.query;
+    const { financialYearId, projectId, buId, clientId, parentId } = req.query;
     const filter = {};
-    
     if (clientId) {
       filter['FK_WTT_Customer_ID'] = clientId;
     }
@@ -123,127 +127,55 @@ const getDashboardOtherExpensesActual = async (req, res) => {
     if (buId) {
       filter['FK_WTT_BusinessUnit_ID'] = buId;
     }
-
     if (projectId) {
       filter['id'] = projectId;
     }
 
-    // Fetch projects based on filters
     const wttProjects = await WTTProject.findAll({
       order: [['id', 'ASC']],
       where: filter,
     });
 
-    // If no projects found, return empty array
-    if (!wttProjects.length) {
-      return res.status(200).json([]);
+    console.log(JSON.parse(JSON.stringify(wttProjects)));
+
+    const whereClause = {
+    };
+  if(financialYearId){
+      
+      whereClause.FK_FinancialYear_ID= +financialYearId;
+  }
+
+    if (wttProjects.length) {
+      whereClause.FK_WTT_Project_ID = {[Op.in]: wttProjects.map(p=> p.id)};
+    }else{
+      return  res.status(200).json([]);
     }
 
-    // Construct where clause for expenses
-    const whereClause = {};
-
-    if (financialYearId) {
-      whereClause.FK_FinancialYear_ID = +financialYearId;
+    if(parentId){
+      whereClause.parentId  = parentId;
     }
-
-    // Filter expenses based on project IDs
-    whereClause.FK_WTT_Project_ID = { [Op.in]: wttProjects.map(p => p.id) };
-
-    // Retrieve records from database
+      
     const records = await OtherExpensesActualBreakdownByMonth.findAll({
       where: whereClause,
     });
 
-    // Group records by parentId and FK_ExpenseCategory_ID
-    const groupedRecords = {};
-    records.forEach(expense => {
-      const key = `${expense.parentId}-${expense.FK_ExpenseCategory_ID}`;
-      if (!groupedRecords[key]) {
-        groupedRecords[key] = {
-          parentId: expense.parentId,
-          FK_ExpenseCategory_ID: expense.FK_ExpenseCategory_ID,
-          monthValues: Array(12).fill({ value: 0, commentValue: '' }), // Initialize month values array
-        };
-      }
-      // Sum up the values for each month
-      expense.monthValues.forEach((month, index) => {
-        groupedRecords[key].monthValues[index].value += +month.value;
-        // You may choose to concatenate comments or implement your desired logic here
+    const formattedRecords = records.map(formatOtherExpenseRecord);
+    const data = formattedRecords[0]; 
+    formattedRecords.slice(1).forEach((dataChild)=>{
+  
+      data.monthValues = data.monthValues.map((d, i)=> {
+        if(d)
+         d.value = (+d.value) + (+(dataChild.monthValues[i].value));
+        return d;
       });
     });
 
-    // Format grouped records
-    const formattedRecords = Object.values(groupedRecords).map(formatOtherExpenseRecord);
-
-    // Send response
-    res.status(200).json(formattedRecords);
+    res.status(200).json(data);
   } catch (error) {
     console.error(error);
     res.status(400).json({ error: error.message });
   }
 };
-
-module.exports = { getDashboardOtherExpensesActual };
-
-
-
-
-// const getDashboardOtherExpensesActual = async (req, res) => {
-//   try {
-//     const { financialYearId, projectId, buId, clientId } = req.query;
-//     const filter = {};
-//     if (clientId) {
-//       filter['FK_WTT_Customer_ID'] = clientId;
-//     }
-
-//     if (buId) {
-//       filter['FK_WTT_BusinessUnit_ID'] = buId;
-//     }
-//     if (projectId) {
-//       filter['id'] = projectId;
-//     }
-
-//     const wttProjects = await WTTProject.findAll({
-//       order: [['id', 'ASC']],
-//       where: filter,
-//     });
-
-//     console.log(JSON.parse(JSON.stringify(wttProjects)));
-
-//     const whereClause = {
-//     };
-//   if(financialYearId){
-      
-//       whereClause.FK_FinancialYear_ID= +financialYearId;
-//   }
-
-//     if (wttProjects.length) {
-//       whereClause.FK_WTT_Project_ID = {[Op.in]: wttProjects.map(p=> p.id)};
-//     }else{
-//       return  res.status(200).json([]);
-//     }
-
-//     const records = await OtherExpensesActualBreakdownByMonth.findAll({
-//       where: whereClause,
-//     });
-
-//     const formattedRecords = records.map(formatOtherExpenseRecord);
-//     const data = formattedRecords[0]; 
-//     formattedRecords.slice(1).forEach((dataChild)=>{
-  
-//       data.monthValues = data.monthValues.map((d, i)=> {
-//         if(d)
-//          d.value = (+d.value) + (+(dataChild.monthValues[i].value));
-//         return d;
-//       });
-//     });
-
-//     res.status(200).json(data);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(400).json({ error: error.message });
-//   }
-// };
 
 module.exports = {
   getOtherExpenses,
