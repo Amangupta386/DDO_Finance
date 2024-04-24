@@ -1,5 +1,6 @@
 // controllers/resourceCostActualBreakdownByMonthController.js
 const {ResourceCostActualBreakdownByMonth} = require('../../models/database1/ResourceCostActualBreakdownByMonth');
+const { WTT_Employee } = require('../../models/database2/wtt_employee');
 const { WTTProject } = require('../../models/database2/wtt_project');
 const { Op } = require('sequelize');
 
@@ -208,7 +209,8 @@ const getDashboardResourceCostActual = async (req, res) => {
 
     const formattedRecords = records.map(formatResourceCostRecord);
     const data = []; 
-    formattedRecords.forEach((dataChild)=>{
+    for(let i=0; i< formattedRecords.length; i++){
+      const dataChild = formattedRecords[i];
       const child = data.find((ch)=>ch.FK_WTT_Employee_ID == dataChild.FK_WTT_Employee_ID);
       if(child){
         child.monthValues = child.monthValues.map((d, i)=> {
@@ -217,10 +219,17 @@ const getDashboardResourceCostActual = async (req, res) => {
           return d;
         });
       }else{
-        data.push(dataChild);
+        // Fetch employee name based on FK_WTT_Employee_ID
+      const employee = await WTT_Employee.findOne({ where: { id: dataChild.FK_WTT_Employee_ID } });
+      if (!employee) {
+        console.error(`Employee with ID ${FK_WTT_Employee_ID} not found.`);
+        continue; // Skip to the next record
+      }
+        data.push({...dataChild, employeeName:employee.FullName});
       }
       
-    });
+    }
+    
 
     res.status(200).json(data);
   } catch (error) {
