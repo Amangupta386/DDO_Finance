@@ -209,7 +209,7 @@ const getDashboardResourceCostActual = async (req, res) => {
     const formattedRecords = records.map(formatResourceCostRecord);
     const data = []; 
     formattedRecords.forEach((dataChild)=>{
-      const child = data.find((ch)=>ch.employeeId == dataChild.employeeId);
+      const child = data.find((ch)=>ch.FK_WTT_Employee_ID == dataChild.FK_WTT_Employee_ID);
       if(child){
         child.monthValues = child.monthValues.map((d, i)=> {
           if(d)
