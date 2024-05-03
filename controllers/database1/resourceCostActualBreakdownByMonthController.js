@@ -2,7 +2,12 @@
 const {ResourceCostActualBreakdownByMonth} = require('../../models/database1/ResourceCostActualBreakdownByMonth');
 const { WTT_Employee } = require('../../models/database2/wtt_employee');
 const { WTTProject } = require('../../models/database2/wtt_project');
+const wttEmployeeController = require('../database2/wttEmployeeController');
 const { Op } = require('sequelize');
+const xlsx = require('xlsx');
+
+
+
 
 const createRecord = async (req, res) => {
   try {
@@ -253,62 +258,79 @@ const getDashboardResourceCostActual = async (req, res) => {
 };
 
 
-// const getDashboardResourceCostActual = async (req, res) => {
-//   try {
-//     const { financialYearId, projectId, buId, clientId } = req.query;
-//     const filter = {};
-//     if (clientId) {
-//       filter['FK_WTT_Customer_ID'] = clientId;
-//     }
 
-//     if (buId) {
-//       filter['FK_WTT_BusinessUnit_ID'] = buId;
-//     }
-//     if (projectId) {
-//       filter['id'] = projectId;
-//     }
+const uploadExcelForResourceCost = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
 
-//     const wttProjects = await WTTProject.findAll({
-//       order: [['id', 'ASC']],
-//       where: filter,
-//     });
+    const file = req.file;
+    const workbook = xlsx.read(file.buffer, { type: 'buffer' });
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    const data = xlsx.utils.sheet_to_json(sheet);
 
-//     console.log(JSON.parse(JSON.stringify(wttProjects)));
+    const employees = await wttEmployeeController.getAllEmployees2();
 
-//     const whereClause = {
-//     };
-//   if(financialYearId){
-      
-//       whereClause.FK_FinancialYear_ID= +financialYearId;
-//   }
+    // Iterate through each item in the uploaded data
+    for (const item of data) {
+      const emp = employees.find(emp => emp.id == item.EmployeeId);
+      if (!emp) {
+        console.error(`Employee not found for EmployeeId: ${item.EmployeeId}`);
+        continue;
+      }
+      const dataRec = await ResourceCostActualBreakdownByMonth.findOne({
+        where:{
+               FK_WTT_Employee_ID: emp.id,
+          FK_FinancialYear_ID: item.FK_FinancialYear_ID,
+          FK_WTT_Project_ID: item.FK_WTT_Project_ID
+        }
+      });
+      const obj = {
+          FK_WTT_Employee_ID: emp.id,
+          FK_FinancialYear_ID: item.FK_FinancialYear_ID,
+          FK_WTT_Project_ID: item.FK_WTT_Project_ID,
+          april: item.April,
+          may: item.May,
+          june: item.June,
+          july: item.July,
+          august: item.August,
+          september: item.September,
+          october: item.October,
+          november: item.November,
+          december: item.December,
+          january: item.January,
+          february: item.February,
+          march: item.March,
+          aprilComment: item.AprilComment,
+          mayComment: item.MayComment,
+          juneComment: item.JuneComment,
+          julyComment: item.JulyComment,
+          augustComment: item.AugustComment,
+          septemberComment: item.SeptemberComment,
+          octoberComment: item.OctoberComment,
+          novemberComment: item.NovemberComment,
+          decemberComment: item.DecemberComment,
+          januaryComment: item.JanuaryComment,
+          februaryComment: item.FebruaryComment,
+          marchComment: item.MarchComment,
+          createdById: req.user.id,
+          updatedAt: new Date(),
+        };
+        for(let key in obj){
+          dataRec[key] = obj[key];
+        }
+      await dataRec.save();
+    
+    }
 
-//     if (wttProjects.length) {
-//       whereClause.FK_WTT_Project_ID = {[Op.in]: wttProjects.map(p=> p.id)};
-//     }else{
-//       return  res.status(200).json([]);
-//     }
-
-//     const records = await ResourceCostActualBreakdownByMonth.findAll({
-//       where: whereClause,
-//     });
-
-//     const formattedRecords = records.map(formatResourceCostRecord);
-//     const data = formattedRecords[0]; 
-//     formattedRecords.slice(1).forEach((dataChild)=>{
-  
-//       data.monthValues = data.monthValues.map((d, i)=> {
-//         if(d)
-//          d.value = (+d.value) + (+(dataChild.monthValues[i].value));
-//         return d;
-//       });
-//     });
-
-//     res.status(200).json(data);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(400).json({ error: error.message });
-//   }
-// };
+    return res.status(200).json({ message: 'Resource cost data updated successfully' });
+  } catch (error) {
+    console.error("Error during uploadExcelForResourceCost:", error.message);
+    return res.status(500).json({ error: error.message });
+  }
+};
 
 module.exports = {
   createRecord,
@@ -319,5 +341,7 @@ module.exports = {
   updateRecord,
   deleteRecord,
   getResourceCostByEmployeeId,
-  getDashboardResourceCostActual
+  getDashboardResourceCostActual,
+  uploadExcelForResourceCost
+  
 };
