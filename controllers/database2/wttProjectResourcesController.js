@@ -42,14 +42,28 @@ const getAllProjectResources = async (req, res) => {
 };
 
 // Get a list of all project resources
-const getAllAllocatedResources = async (req, res) => {
+const getAllAllocatedResources = async (startDateFilter, endDateFilter, res) => {
   try {
+    const filter= {}; 
+    if(+startDateFilter){
+      const date = new Date(+startDateFilter); 
+      date.setHours(0); 
+      date.setMinutes(0);
+      filter.startDate = {
+        [Op.gte]: date,
+      } 
+
+    }
+    if(+endDateFilter){
+      const date = new Date(+endDateFilter); 
+      date.setHours(0); 
+      date.setMinutes(0);
+      filter.endDate = {
+        [Op.lte]: date,
+      } 
+    }
     const projectResources = await WTT_ProjectResources.findAll({
-      where:{
-        endDate: {
-          [Op.gte]: new Date() // This checks if endDate is greater than or equal to the current date
-        }
-      }
+      where:filter
     });
     // Extract the dataValues and convert to a plain array
     const plainArray = projectResources.map(pr => pr.dataValues);
