@@ -13,9 +13,20 @@ const createRecord = async (req, res) => {
   }
 };
 
+
 const getAllRecords = async (req, res) => {
   try {
-    const records = await ResourceCostActualBreakdownByMonth.findAll();
+    const { projectId } = req.query;
+    const whereClause = {};
+
+    if (projectId) {
+      whereClause.FK_WTT_Project_ID = projectId;
+    }
+
+    const records = await ResourceCostActualBreakdownByMonth.findAll({
+      where: whereClause,
+    });
+
     const formattedRecords = records.map(formatResourceCostRecord);
     res.status(200).json(formattedRecords);
   } catch (error) {
@@ -23,6 +34,9 @@ const getAllRecords = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+
+
 
 const getRecordById = async (req, res) => {
   const { id } = req.params;
