@@ -34,8 +34,8 @@ const getAllResourceCostWithProjectId = async (req, res) => {
         [Op.gte]: fy.startDate
       };
     }
-   
-    const employees = JSON.parse(JSON.stringify(await WTT_ProjectResources.findAll({
+    const resourceAllocations =  await wttProjectResourcesController.getAllAllocatedResources(undefined, undefined, res);
+        const employees = JSON.parse(JSON.stringify(await WTT_ProjectResources.findAll({
       where: filter,
       include: [
         {
@@ -56,6 +56,8 @@ const getAllResourceCostWithProjectId = async (req, res) => {
        const employee = empD.Employee;
       // Find the associated employee
       const rc = resourceCostActual?.find((rc) => employee.id === rc.FK_WTT_Employee_ID);
+      const empAllocation = resourceAllocations.find((ra)=> ra.FK_WTT_Project_ID == projectId &&  ra.FK_WTT_Employee_ID == employee.id);
+           console.log(empAllocation, "empAllocation")
      
       // Log the values after defining the 'employee' variable
       // ('employee.dataValues.id:', employee ? employee.dataValues.id : 'N/A');
