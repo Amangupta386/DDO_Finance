@@ -58,6 +58,9 @@ const getAllResourceCostWithProjectId = async (req, res) => {
        const employee = empD.Employee;
       // Find the associated employee
       const resources = resourceCosts.find((rc) => rc?.FK_WTT_Employee_ID == employee.id);
+      if(!resources){
+        return resources;
+      }
       const totalMonthlyCost = parseInt(resources.monthlyCostComp1) + parseInt(resources.monthlyCostComp2) + parseInt(resources.monthlyCostComp3) + parseInt(resources.monthlyCostComp4);                      
            
       const rc = resourceCostActual?.find((rc) => employee.id === rc.FK_WTT_Employee_ID);
