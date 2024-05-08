@@ -8,6 +8,7 @@ const { Op, where } = require('sequelize');
 const { WTT_FinancialYear } = require('../../models/database2/wtt_financialYear');
 const { ResourceCostActualBreakdownByMonth } = require('../../models/database1/ResourceCostActualBreakdownByMonth');
 const wttProjectResourcesController = require('../database2/wttProjectResourcesController');
+const resourceCostController = require('../database1/resourceCostController');
 const getAllResourceCostWithProjectId = async (req, res) => {
   const { projectId }= req.params;
   const { fyId } = req.query;
