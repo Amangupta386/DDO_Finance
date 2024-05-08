@@ -80,6 +80,7 @@ const getAllResourceCostWithProjectId = async (req, res) => {
 
       if (employee) {
         return {
+          d:fy.startDate,
           id: rc?.id || undefined,
           employeeCode: employee.EmployeeCode,
           employeeName: employee.FullName,
