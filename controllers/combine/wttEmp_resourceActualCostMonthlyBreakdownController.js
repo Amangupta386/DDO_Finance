@@ -7,7 +7,7 @@ const { WTT_Employee } = require('../../models/database2/wtt_employee');
 const { Op, where } = require('sequelize');
 const { WTT_FinancialYear } = require('../../models/database2/wtt_financialYear');
 const { ResourceCostActualBreakdownByMonth } = require('../../models/database1/ResourceCostActualBreakdownByMonth');
-
+const wttProjectResourcesController = require('../database2/wttProjectResourcesController');
 const getAllResourceCostWithProjectId = async (req, res) => {
   const { projectId }= req.params;
   const { fyId } = req.query;
@@ -34,6 +34,7 @@ const getAllResourceCostWithProjectId = async (req, res) => {
         [Op.gte]: fy.startDate
       };
     }
+    const resourceCosts = await resourceCostController.getAllResourceCosts2();
     const resourceAllocations =  await wttProjectResourcesController.getAllAllocatedResources(undefined, undefined, res);
         const employees = JSON.parse(JSON.stringify(await WTT_ProjectResources.findAll({
       where: filter,
@@ -55,9 +56,14 @@ const getAllResourceCostWithProjectId = async (req, res) => {
     const combinedData = employees?.map((empD) => {
        const employee = empD.Employee;
       // Find the associated employee
+      const resources = resourceCosts.find((rc) => rc?.FK_WTT_Employee_ID == employee.id);
+      const totalMonthlyCost = parseInt(resources.monthlyCostComp1) + parseInt(resources.monthlyCostComp2) + parseInt(resources.monthlyCostComp3) + parseInt(resources.monthlyCostComp4);                      
+           
       const rc = resourceCostActual?.find((rc) => employee.id === rc.FK_WTT_Employee_ID);
       const empAllocation = resourceAllocations.find((ra)=> ra.FK_WTT_Project_ID == projectId &&  ra.FK_WTT_Employee_ID == employee.id);
            console.log(empAllocation, "empAllocation")
+        
+      const costToThisProject = totalMonthlyCost * (+empAllocation.allocPercent/100); 
      
       // Log the values after defining the 'employee' variable
       // ('employee.dataValues.id:', employee ? employee.dataValues.id : 'N/A');
@@ -88,18 +94,18 @@ const getAllResourceCostWithProjectId = async (req, res) => {
           FK_WTT_Project_ID: rc?.FK_WTT_Project_ID || 'N/A',
           // Include monthValues array
           monthValues: [
-            { label: 'April', value: rc?.april || '', commentValue: rc?.aprilComment || '' },
-            { label: 'May', value: rc?.may || '', commentValue: rc?.mayComment || ''},
-            { label: 'June', value: rc?.june || '', commentValue: rc?.juneComment || '' },
-            { label: 'July', value: rc?.july || '', commentValue: rc?.julyComment || '' },
-            { label: 'August', value: rc?.august || '', commentValue: rc?.augustComment || ''},
-            { label: 'September', value: rc?.september || '', commentValue: rc?.septemberComment || ''},
-            { label: 'October', value: rc?.october || '', commentValue: rc?.octoberComment || ''},
-            { label: 'November', value: rc?.november || '', commentValue: rc?.novemberComment || ''},
-            { label: 'December', value: rc?.december || '', commentValue: rc?.decemberComment || ''},
-            { label: 'January', value: rc?.january || '', commentValue: rc?.januaryComment || ''},
-            { label: 'February', value: rc?.february || '', commentValue: rc?.februaryComment || ''},
-            { label: 'March', value: rc?.march || '', commentValue: rc?.marchComment || ''},
+            { label: 'April', value: rc?.april || costToThisProject, commentValue: rc?.aprilComment || '' },
+            { label: 'May', value: rc?.may || costToThisProject, commentValue: rc?.mayComment || ''},
+            { label: 'June', value: rc?.june || costToThisProject, commentValue: rc?.juneComment || '' },
+            { label: 'July', value: rc?.july || costToThisProject, commentValue: rc?.julyComment || '' },
+            { label: 'August', value: rc?.august || costToThisProject, commentValue: rc?.augustComment || ''},
+            { label: 'September', value: rc?.september || costToThisProject, commentValue: rc?.septemberComment || ''},
+            { label: 'October', value: rc?.october || costToThisProject, commentValue: rc?.octoberComment || ''},
+            { label: 'November', value: rc?.november || costToThisProject, commentValue: rc?.novemberComment || ''},
+            { label: 'December', value: rc?.december || costToThisProject, commentValue: rc?.decemberComment || ''},
+            { label: 'January', value: rc?.january || costToThisProject, commentValue: rc?.januaryComment || ''},
+            { label: 'February', value: rc?.february || costToThisProject, commentValue: rc?.februaryComment || ''},
+            { label: 'March', value: rc?.march || costToThisProject, commentValue: rc?.marchComment || ''},
           ],
         };
       } else {
