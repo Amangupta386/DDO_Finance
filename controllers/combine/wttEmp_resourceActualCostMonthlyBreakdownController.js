@@ -63,6 +63,8 @@ const getAllResourceCostWithProjectId = async (req, res) => {
       const rc = resourceCostActual?.find((rc) => employee.id === rc.FK_WTT_Employee_ID);
       const empAllocation = resourceAllocations.find((ra)=> ra.FK_WTT_Project_ID == projectId &&  ra.FK_WTT_Employee_ID == employee.id);
            console.log(empAllocation, "empAllocation")
+ if(!empAllocation)
+          return empAllocation;
         
       const costToThisProject = totalMonthlyCost * (+empAllocation.allocPercent/100); 
      
@@ -136,7 +138,7 @@ const getAllResourceCostWithProjectId = async (req, res) => {
       }
     });
     if(combinedData) {
-      return res.json(combinedData);
+      return res.json(combinedData.filter((d)=>d));
     } else {
       return res.json("Record not found");
     }
