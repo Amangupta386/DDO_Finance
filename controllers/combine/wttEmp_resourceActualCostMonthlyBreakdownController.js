@@ -54,7 +54,7 @@ const getAllResourceCostWithProjectId = async (req, res) => {
     const resourceCostActual = await resourceCostActualBreakdownByMonthController.getRecordByProjectId(projectId);
     (resourceCostActual, "Data employees:");
     (employees, "employees: d");
-    const combinedData = employees?.map((empD) => {
+    const combinedData = [...employees]?.map((empD) => {
        const employee = empD.Employee;
       // Find the associated employee
       const resources = resourceCosts.find((rc) => rc?.FK_WTT_Employee_ID == employee.id);
@@ -64,12 +64,38 @@ const getAllResourceCostWithProjectId = async (req, res) => {
       const totalMonthlyCost = parseInt(resources.monthlyCostComp1) + parseInt(resources.monthlyCostComp2) + parseInt(resources.monthlyCostComp3) + parseInt(resources.monthlyCostComp4);                      
            
       const rc = resourceCostActual?.find((rc) => employee.id === rc.FK_WTT_Employee_ID);
-      const empAllocation = resourceAllocations.find((ra)=> ra.FK_WTT_Project_ID == projectId &&  ra.FK_WTT_Employee_ID == employee.id);
-           console.log(empAllocation, "empAllocation")
- if(!empAllocation)
-          return empAllocation;
-        
-      const costToThisProject = totalMonthlyCost * (+empAllocation.allocPercent/100); 
+      const empAllocation = resourceAllocations.filter((ra)=> ra.FK_WTT_Project_ID == projectId &&  ra.FK_WTT_Employee_ID == employee.id).map((da)=>{
+        return {
+            endMonth: da.endDate.getMonth()+1, 
+            endYear: da.endDate.getFullYear(), 
+            startYear: da.startDate.getFullYear(),
+            startMonth: da.startDate.getMonth()+1, 
+            allocPercent: da.allocPercent,
+            
+        };
+      });
+      console.log(empAllocation, "empAllocation", fy.endDate, fy.startDate)
+      if (!empAllocation)
+        return empAllocation;
+
+      const costToThisProject = (month, date) => {
+        const year = date.getFullYear();
+        const allocation = empAllocation.filter((allo) => {
+          const startMonth = allo.startMonth == 1 ? 13 : allo.startMonth == 2 ? 14 : allo.startMonth == 3 ? 15 : allo.startMonth;
+          const endMonth = allo.endMonth == 1 ? 13 : allo.endMonth == 2 ? 14 : allo.endMonth == 3 ? 15 : allo.endMonth;
+          const newmonth = month == 1 ? 13 : month == 2 ? 14 : month == 3 ? 15 : month;
+
+
+          if ((allo.startYear == year || allo.endYear == year) && (startMonth <= newmonth && endMonth >= newmonth)) {
+            return true
+          }
+          return false;
+        });
+        console.log(allocation, month, year);
+        return allocation.reduce((prev, curr)=>{
+          return prev + (totalMonthlyCost * (+curr.allocPercent/100))
+        },0)
+      }; 
      
       // Log the values after defining the 'employee' variable
       // ('employee.dataValues.id:', employee ? employee.dataValues.id : 'N/A');
@@ -101,18 +127,18 @@ const getAllResourceCostWithProjectId = async (req, res) => {
           FK_WTT_Project_ID: rc?.FK_WTT_Project_ID || 'N/A',
           // Include monthValues array
           monthValues: [
-            { label: 'April', value: rc?.april || costToThisProject, commentValue: rc?.aprilComment || '' },
-            { label: 'May', value: rc?.may || costToThisProject, commentValue: rc?.mayComment || ''},
-            { label: 'June', value: rc?.june || costToThisProject, commentValue: rc?.juneComment || '' },
-            { label: 'July', value: rc?.july || costToThisProject, commentValue: rc?.julyComment || '' },
-            { label: 'August', value: rc?.august || costToThisProject, commentValue: rc?.augustComment || ''},
-            { label: 'September', value: rc?.september || costToThisProject, commentValue: rc?.septemberComment || ''},
-            { label: 'October', value: rc?.october || costToThisProject, commentValue: rc?.octoberComment || ''},
-            { label: 'November', value: rc?.november || costToThisProject, commentValue: rc?.novemberComment || ''},
-            { label: 'December', value: rc?.december || costToThisProject, commentValue: rc?.decemberComment || ''},
-            { label: 'January', value: rc?.january || costToThisProject, commentValue: rc?.januaryComment || ''},
-            { label: 'February', value: rc?.february || costToThisProject, commentValue: rc?.februaryComment || ''},
-            { label: 'March', value: rc?.march || costToThisProject, commentValue: rc?.marchComment || ''},
+            { label: 'April', value: rc?.april || costToThisProject(4, fy.startDate), commentValue: rc?.aprilComment || '' },
+            { label: 'May', value: rc?.may || costToThisProject(5, fy.startDate), commentValue: rc?.mayComment || ''},
+            { label: 'June', value: rc?.june || costToThisProject(6, fy.startDate), commentValue: rc?.juneComment || '' },
+            { label: 'July', value: rc?.july || costToThisProject(7, fy.startDate), commentValue: rc?.julyComment || '' },
+            { label: 'August', value: rc?.august || costToThisProject(8, fy.startDate), commentValue: rc?.augustComment || ''},
+            { label: 'September', value: rc?.september || costToThisProject(9, fy.startDate), commentValue: rc?.septemberComment || ''},
+            { label: 'October', value: rc?.october || costToThisProject(10, fy.startDate), commentValue: rc?.octoberComment || ''},
+            { label: 'November', value: rc?.november || costToThisProject(11, fy.startDate), commentValue: rc?.novemberComment || ''},
+            { label: 'December', value: rc?.december || costToThisProject(12, fy.startDate), commentValue: rc?.decemberComment || ''},
+            { label: 'January', value: rc?.january || costToThisProject(1, fy.endDate), commentValue: rc?.januaryComment || ''},
+            { label: 'February', value: rc?.february || costToThisProject(2, fy.endDate), commentValue: rc?.februaryComment || ''},
+            { label: 'March', value: rc?.march || costToThisProject(3, fy.endDate), commentValue: rc?.marchComment || ''},
           ],
         };
       } else {
