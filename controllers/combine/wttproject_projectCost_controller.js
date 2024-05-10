@@ -12,6 +12,7 @@ const {formatActualRecord } = require('../database1/actualRevenueBreakdownByMont
 const { ForecastedRevenueBreakdownByMonth } = require('../../models/database1/ForecastedRevenueBreakdownByMonth');
 const { ActualRevenueBreakdownByMonth } = require('../../models/database1/ActualRevenueBreakdownByMonth');
 const { WTTCustomer } = require('../../models/database2/wtt_cutomer');
+const { ActualCollectionBreakdownByMonth } = require('../../models/database1/ActualCollectionBreakdownByMonth');
 
 const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
     try {
@@ -48,7 +49,7 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
             const whereClause = {
                 FK_FinancialYear_ID: 2,
               };
-              if (projectId) {
+              if (pData.id) {
                 whereClause.FK_WTT_Project_ID = pData.id;
               }
                 const records = await ActualCollectionBreakdownByMonth.findAll({
