@@ -61,6 +61,10 @@ const getAllAllocatedResources = async (startDateFilter, endDateFilter, res) => 
       filter.endDate = {
         [Op.lte]: date,
       } 
+    }else{
+      filter.endDate = {
+        [Op.gte]: new Date(),
+      }
     }
     const projectResources = await WTT_ProjectResources.findAll({
       where:{
