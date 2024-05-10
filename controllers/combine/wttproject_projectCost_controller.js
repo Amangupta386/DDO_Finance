@@ -28,6 +28,18 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
                 },
                 attributes: ['id', 'name'] // Include only id and name for the client
             });
+            const whereClause = {
+                FK_FinancialYear_ID: 2,
+              };
+              if (pData.id) {
+                whereClause.FK_WTT_Project_ID = +pData.id;
+              }
+                const records = await ActualCollectionBreakdownByMonth.findAll({
+                  where: whereClause,
+                });
+                if(!records?.length){
+                    wttProjects.splice(i,1);
+                }
 
             // Attach client details (id and name) to the project
             pData.client = client;
@@ -46,18 +58,7 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
 
             }
 
-            const whereClause = {
-                FK_FinancialYear_ID: 2,
-              };
-              if (pData.id) {
-                whereClause.FK_WTT_Project_ID = pData.id;
-              }
-                const records = await ActualCollectionBreakdownByMonth.findAll({
-                  where: whereClause,
-                });
-                if(!records?.length){
-                    wttProjects.splice(i,1);
-                }
+            
 
         }
         return res.send(wttProjects);
