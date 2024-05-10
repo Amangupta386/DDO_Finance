@@ -45,6 +45,19 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
 
             }
 
+            const whereClause = {
+                FK_FinancialYear_ID: 2,
+              };
+              if (projectId) {
+                whereClause.FK_WTT_Project_ID = pData.id;
+              }
+                const records = await ActualCollectionBreakdownByMonth.findAll({
+                  where: whereClause,
+                });
+                if(!records?.length){
+                    wttProjects.splice(i,1);
+                }
+
         }
         return res.send(wttProjects);
     } catch (error) {
