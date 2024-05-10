@@ -11,6 +11,7 @@ const {formatActualRecord } = require('../database1/actualRevenueBreakdownByMont
 
 const { ForecastedRevenueBreakdownByMonth } = require('../../models/database1/ForecastedRevenueBreakdownByMonth');
 const { ActualRevenueBreakdownByMonth } = require('../../models/database1/ActualRevenueBreakdownByMonth');
+const { WTTCustomer } = require('../../models/database2/wtt_cutomer');
 
 const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
     try {
