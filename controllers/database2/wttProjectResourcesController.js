@@ -65,9 +65,9 @@ const getAllAllocatedResources = async (startDateFilter, endDateFilter, res) => 
     const projectResources = await WTT_ProjectResources.findAll({
       where:{
         ...filter,
-        endDate: {
-          [Op.gte]:filter.endDate || new Date() // This checks if endDate is greater than or equal to the current date
-        }
+        // endDate: {
+        //   [Op.gte]:filter.endDate || new Date() // This checks if endDate is greater than or equal to the current date
+        // }
       }
     });
     // Extract the dataValues and convert to a plain array
