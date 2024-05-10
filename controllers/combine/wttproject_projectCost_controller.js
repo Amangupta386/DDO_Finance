@@ -17,7 +17,7 @@ const { ActualCollectionBreakdownByMonth } = require('../../models/database1/Act
 const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
     try {
         const wttProjects = await WTTProjectController.getAllProjects2();
-
+        const data = [];
         // Fetch client details for each project
         for (let i = 0; i < wttProjects.length; i++) {
             let pData = wttProjects[i];
@@ -28,6 +28,10 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
                 },
                 attributes: ['id', 'name'] // Include only id and name for the client
             });
+             // Attach client details (id and name) to the project
+             pData.client = client;
+
+            
             const whereClause = {
                 FK_FinancialYear_ID: 2,
               };
@@ -37,31 +41,28 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
                 const records = await ActualCollectionBreakdownByMonth.findAll({
                   where: whereClause,
                 });
-                if(!records?.length){
-                    wttProjects.splice(i,1);
+                if(records?.length){
+                    data.push({
+                        id: +pData.id,
+                              FK_FinancialYear_ID: 2,
+                              financialYearName: 'N/A',
+                              FK_WTT_Customer_ID: pData.client ? pData.client.id : 'N/A',
+                              customerName: pData.client ? pData.client.name : 'N/A',
+                              FK_WTT_Project_ID: +pData.id,
+                              projectName: pData.name,
+                              forecast: 0,
+                              actual: 0,
+                             projectStatus: pData.sowEndDate,
+                             records
+                    })
                 }
 
-            // Attach client details (id and name) to the project
-            pData.client = client;
-
-            wttProjects[i] ={
-                id: +pData.id,
-                      FK_FinancialYear_ID: 2,
-                      financialYearName: 'N/A',
-                      FK_WTT_Customer_ID: pData.client ? pData.client.id : 'N/A',
-                      customerName: pData.client ? pData.client.name : 'N/A',
-                      FK_WTT_Project_ID: +pData.id,
-                      projectName: pData.name,
-                      forecast: 0,
-                      actual: 0,
-                     projectStatus: pData.sowEndDate,
-
-            }
+           
 
             
 
         }
-        return res.send(wttProjects);
+        return res.send(data);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: 'Server Error' });
