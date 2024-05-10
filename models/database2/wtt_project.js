@@ -66,6 +66,9 @@ const WTTProject = sequelize2.define('WTT_Project', {
   POC_email: {
     type: DataTypes.STRING,
   },
+  sowEndDate: {
+    type: DataTypes.STRING,
+  },
 },{
   tableName: 'WTT_Project',
   schema: 'public', 
