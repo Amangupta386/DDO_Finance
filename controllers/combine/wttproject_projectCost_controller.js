@@ -34,7 +34,7 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
             wttProjects[i] ={
                 id: +pData.id,
                       FK_FinancialYear_ID: 2,
-                      financialYearName: fyear ? fyear.name : 'N/A',
+                      financialYearName: 'N/A',
                       FK_WTT_Customer_ID: pData.client ? pData.client.id : 'N/A',
                       customerName: pData.client ? pData.client.name : 'N/A',
                       FK_WTT_Project_ID: +pData.id,
