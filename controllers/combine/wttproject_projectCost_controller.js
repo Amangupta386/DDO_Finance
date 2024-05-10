@@ -32,16 +32,16 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
              pData.client = client;
 
             
-            const whereClause = {
-                FK_FinancialYear_ID: 2,
-              };
-              if (pData.id) {
-                whereClause.FK_WTT_Project_ID = +pData.id;
-              }
-                const records = await ActualCollectionBreakdownByMonth.findAll({
-                  where: whereClause,
-                });
-                if(records?.length){
+            // const whereClause = {
+            //     FK_FinancialYear_ID: 2,
+            //   };
+            //   if (pData.id) {
+            //     whereClause.FK_WTT_Project_ID = +pData.id;
+            //   }
+            //     const records = await ActualCollectionBreakdownByMonth.findAll({
+            //       where: whereClause,
+            //     });
+                // if(records?.length){
                     data.push({
                         id: +pData.id,
                               FK_FinancialYear_ID: 2,
@@ -53,9 +53,9 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
                               forecast: 0,
                               actual: 0,
                              projectStatus: pData.sowEndDate,
-                             records
+                            
                     })
-                }
+                // }
 
            
 
