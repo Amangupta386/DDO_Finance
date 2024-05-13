@@ -36,7 +36,7 @@ const getAllResourceCostWithProjectId = async (req, res) => {
       // };
     }
     const resourceCosts = await resourceCostController.getAllResourceCosts2();
-    const resourceAllocations =  await wttProjectResourcesController.getAllAllocatedResources(undefined, undefined, res);
+    const resourceAllocations =  (await wttProjectResourcesController.getAllAllocatedResources(undefined, undefined, res)).filter((f)=>f.FK_WTT_Project_ID == projectId);
         const employees = JSON.parse(JSON.stringify(resourceAllocations));
     employees.forEach(emp => {
        const tempId = emp.id;
@@ -47,8 +47,10 @@ const getAllResourceCostWithProjectId = async (req, res) => {
     const emp =  await WTT_Employee.findAll();
     (resourceCostActual, "Data employees:");
     (employees, "employees: d");
+    // res.send({emp,empD});
     const combinedData = [...employees]?.map((empD) => {
-      const employee =emp.find((e)=> e.id == empD.Employee);
+     
+      const employee =emp.find((e)=> e.id == empD.FK_WTT_Employee_ID);
       const formattedJoiningDate = employee ? moment(employee.JoiningDate).format('DD/MM/YYYY') : 'N/A';
       // Find the associated employee
       const resources = resourceCosts.find((rc) => rc?.FK_WTT_Employee_ID == employee.id);
