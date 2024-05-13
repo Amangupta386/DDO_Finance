@@ -49,7 +49,7 @@ const getAllAllocatedResources = async (startDateFilter, endDateFilter, res) => 
       const date = new Date(+startDateFilter); 
       date.setHours(0); 
       date.setMinutes(0);
-      filter.startDate = {
+      filter.endDate = {
         [Op.gte]: date,
       } 
 
