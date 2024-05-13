@@ -38,7 +38,9 @@ const getAllResourceCostWithProjectId = async (req, res) => {
     const resourceCosts = await resourceCostController.getAllResourceCosts2();
     const resourceAllocations =  (await wttProjectResourcesController.getAllAllocatedResources(fy.startDate.getTime(), fy.endDate.getTime(), res)).filter((f)=>f.FK_WTT_Project_ID == projectId);
         const employees = JSON.parse(JSON.stringify(resourceAllocations));
-    employees.forEach(emp => {
+   
+   
+        employees.forEach(emp => {
        const tempId = emp.id;
        delete emp.id; 
        emp.fk_id = tempId;
@@ -49,12 +51,14 @@ const getAllResourceCostWithProjectId = async (req, res) => {
         IsActive: 'true', 
       },
     });
-    (resourceCostActual, "Data employees:");
-    (employees, "employees: d");
+ 
     // res.send({emp,empD});
     const combinedData = [...employees]?.map((empD) => {
      
       const employee =emp.find((e)=> e.id == empD.FK_WTT_Employee_ID);
+      if(!employee){
+        return employee;
+      }
       const formattedJoiningDate = employee ? moment(employee.JoiningDate).format('DD/MM/YYYY') : 'N/A';
       // Find the associated employee
       const resources = resourceCosts.find((rc) => rc?.FK_WTT_Employee_ID == employee.id);
@@ -229,8 +233,25 @@ const getAllResourceCostWithProjectId = async (req, res) => {
         };
       }
     });
-    if(combinedData) {
-      return res.json(combinedData.filter((d)=>d));
+   const result = combinedData.filter((d)=>d);
+   const output = [];
+   for (let index = 0; index < result.length; index++) {
+    const element = result[index];
+    const data = output.find((out)=> out.FK_WTT_Employee_ID == element.FK_WTT_Employee_ID); 
+    if(data){
+      data.monthValues = data.monthValues.map((d,i)=>{
+         d.value += +element.monthValues[i].value;
+         return d;
+      })
+    }else{
+      output.push(element);
+    }
+    
+   }
+    
+    
+    if(output) {
+      return res.json(output);
     } else {
       return res.json("Record not found");
     }
