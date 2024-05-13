@@ -46,15 +46,16 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
 
                  }
 
+
                  if(forecastedRevenue.length > 1){
-                    forecastedRevenue = records.slice(1).reduce((rec, currec)=>{
+                    forecastedRevenue = forecastedRevenue.slice(1).reduce((rec, currec)=>{
                         if(currec?.monthValues)
                         rec.monthValues = currec.monthValues.map((re, i)=> {
                             re.value += +rec.monthValues[i];
                            return re;
                         });
                         return rec;
-                    } ,records[0] )
+                    } ,forecastedRevenue[0] )
                  }else{
                     forecastedRevenue = forecastedRevenue[0];
                  }
@@ -64,6 +65,8 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
         prev += +curr.value;
         return prev;
                     }, 0)
+                 }else{
+                    forecastedRevenue = 0;
                  }
             
                     data.push({
