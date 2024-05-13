@@ -68,6 +68,45 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
                  }else{
                     forecastedRevenue = 0;
                  }
+
+
+
+                 const actualrecord = await ActualRevenueBreakdownByMonth.findAll({
+                    where: {
+                    FK_WTT_Project_ID: +pData.id, 
+                    FK_FinancialYear_ID:financialYear
+                  }
+    
+                     });
+                     let actualRevenue;
+                     if(actualrecord){
+                        actualRevenue  = actualrecord.map(record=>formatActualRecord(record));
+    
+                     }
+    
+    
+                     if(actualRevenue.length > 1){
+                        actualRevenue = actualRevenue.slice(1).reduce((rec, currec)=>{
+                            if(currec?.monthValues)
+                            rec.monthValues = currec.monthValues.map((re, i)=> {
+                                re.value += +rec.monthValues[i];
+                               return re;
+                            });
+                            return rec;
+                        } ,actualRevenue[0] )
+                     }else{
+                        actualRevenue = actualRevenue[0];
+                     }
+    
+                     if(actualRevenue?.monthValues){
+                        actualRevenue = actualRevenue.monthValues.reduce((prev, curr)=>{
+            prev += +curr.value;
+            return prev;
+                        }, 0)
+                     }else{
+                        actualRevenue = 0;
+                     }
+                
             
                     data.push({
                         id: +pData.id,
@@ -78,7 +117,7 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
                               FK_WTT_Project_ID: +pData.id,
                               projectName: pData.name,
                               forecast: forecastedRevenue || 0,
-                              actual: 0,
+                              actual: actualRevenue ||0,
                              projectStatus: pData.sowEndDate,
                             
                     })
