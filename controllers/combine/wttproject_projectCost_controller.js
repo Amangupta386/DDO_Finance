@@ -13,9 +13,11 @@ const { ForecastedRevenueBreakdownByMonth } = require('../../models/database1/Fo
 const { ActualRevenueBreakdownByMonth } = require('../../models/database1/ActualRevenueBreakdownByMonth');
 const { WTTCustomer } = require('../../models/database2/wtt_cutomer');
 const { ActualCollectionBreakdownByMonth } = require('../../models/database1/ActualCollectionBreakdownByMonth');
+const { WTT_FinancialYear } = require('../../models/database2/wtt_financialYear');
 
 const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
     try {
+        const financialYear= Math.max(...(await WTT_FinancialYear.findAll()).map(year => year.id));
         const wttProjects = await WTTProjectController.getAllProjects2();
         const data = [];
         // Fetch client details for each project
@@ -31,26 +33,48 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
              // Attach client details (id and name) to the project
              pData.client = client;
 
+             const records = await ForecastedRevenueBreakdownByMonth.findAll({
+                where: {
+                FK_WTT_Project_ID: +pData.id, 
+                FK_FinancialYear_ID:financialYear
+              }
+
+                 });
+                 let forecastedRevenue;
+                 if(records){
+                    forecastedRevenue  = records.map(record=>formatRevenueRecord(record));
+
+                 }
+
+                 if(forecastedRevenue.length > 1){
+                    forecastedRevenue = records.slice(1).reduce((rec, currec)=>{
+                        if(currec?.monthValues)
+                        rec.monthValues = currec.monthValues.map((re, i)=> {
+                            re.value += +rec.monthValues[i];
+                           return re;
+                        });
+                        return rec;
+                    } ,records[0] )
+                 }else{
+                    forecastedRevenue = forecastedRevenue[0];
+                 }
+
+                 if(forecastedRevenue?.monthValues){
+                    forecastedRevenue = forecastedRevenue.monthValues.reduce((prev, curr)=>{
+        prev += +curr.value;
+        return prev;
+                    }, 0)
+                 }
             
-            // const whereClause = {
-            //     FK_FinancialYear_ID: 2,
-            //   };
-            //   if (pData.id) {
-            //     whereClause.FK_WTT_Project_ID = +pData.id;
-            //   }
-            //     const records = await ActualCollectionBreakdownByMonth.findAll({
-            //       where: whereClause,
-            //     });
-                // if(records?.length){
                     data.push({
                         id: +pData.id,
-                              FK_FinancialYear_ID: 2,
+                              FK_FinancialYear_ID: financialYear,
                               financialYearName: 'N/A',
                               FK_WTT_Customer_ID: pData.client ? pData.client.id : 'N/A',
                               customerName: pData.client ? pData.client.name : 'N/A',
                               FK_WTT_Project_ID: +pData.id,
                               projectName: pData.name,
-                              forecast: 0,
+                              forecast: forecastedRevenue ?? 0,
                               actual: 0,
                              projectStatus: pData.sowEndDate,
                             
