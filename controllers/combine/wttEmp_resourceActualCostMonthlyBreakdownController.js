@@ -36,7 +36,7 @@ const getAllResourceCostWithProjectId = async (req, res) => {
       // };
     }
     const resourceCosts = await resourceCostController.getAllResourceCosts2();
-    const resourceAllocations =  (await wttProjectResourcesController.getAllAllocatedResources(undefined, undefined, res)).filter((f)=>f.FK_WTT_Project_ID == projectId);
+    const resourceAllocations =  (await wttProjectResourcesController.getAllAllocatedResources(fy.startDate.getTime(), fy.endDate.getTime(), res)).filter((f)=>f.FK_WTT_Project_ID == projectId);
         const employees = JSON.parse(JSON.stringify(resourceAllocations));
     employees.forEach(emp => {
        const tempId = emp.id;
@@ -44,7 +44,11 @@ const getAllResourceCostWithProjectId = async (req, res) => {
        emp.fk_id = tempId;
     });
     const resourceCostActual = await resourceCostActualBreakdownByMonthController.getRecordByProjectId(projectId);
-    const emp =  await WTT_Employee.findAll();
+    const emp =  await WTT_Employee.findAll({
+      where: {
+        IsActive: 'true', 
+      },
+    });
     (resourceCostActual, "Data employees:");
     (employees, "employees: d");
     // res.send({emp,empD});
