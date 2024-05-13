@@ -28,24 +28,16 @@ const getAllResourceCostWithProjectId = async (req, res) => {
         }
       }
       );
-      filter.endDate= {
-        [Op.lte]: fy.endDate // This checks if endDate is greater than or equal to the current date
-      };
-      filter.startDate={
-        [Op.gte]: fy.startDate
-      };
+      // filter.endDate= {
+      //   [Op.lte]: fy.endDate // This checks if endDate is greater than or equal to the current date
+      // };
+      // filter.startDate={
+      //   [Op.gte]: fy.startDate
+      // };
     }
     const resourceCosts = await resourceCostController.getAllResourceCosts2();
     const resourceAllocations =  await wttProjectResourcesController.getAllAllocatedResources(undefined, undefined, res);
-        const employees = JSON.parse(JSON.stringify(await WTT_ProjectResources.findAll({
-      where: filter,
-      include: [
-        {
-          model: WTT_Employee, // Assuming WTT_Employee is the name of the Employee table
-          as: 'Employee', // Adjust this according to the actual association alias in your Sequelize model
-        }
-      ]
-    })));
+        const employees = JSON.parse(JSON.stringify(resourceAllocations));
     employees.forEach(emp => {
        const tempId = emp.id;
        delete emp.id; 
@@ -54,12 +46,44 @@ const getAllResourceCostWithProjectId = async (req, res) => {
     const resourceCostActual = await resourceCostActualBreakdownByMonthController.getRecordByProjectId(projectId);
     (resourceCostActual, "Data employees:");
     (employees, "employees: d");
-    const combinedData = [...employees]?.map((empD) => {
-       const employee = empD.Employee;
+    const combinedData = [...employees]?.map((employee) => {
+      // const employee = empD.Employee;
+      const formattedJoiningDate = employee ? moment(employee.JoiningDate).format('DD/MM/YYYY') : 'N/A';
       // Find the associated employee
       const resources = resourceCosts.find((rc) => rc?.FK_WTT_Employee_ID == employee.id);
       if(!resources){
-        return resources;
+        return {
+          d:fy.startDate,
+          id: undefined,
+          employeeCode: employee.EmployeeCode,
+          employeeName: employee.FullName,
+          // Additional properties
+          joiningDate: formattedJoiningDate,
+          FK_WTT_Employee_ID: employee.id || 'N/A',
+          // Additional properties from your controller
+          createdAt: 'N/A',
+          updatedAt: 'N/A',
+          sort: 'N/A',
+          createdById:  'N/A',
+          updatedById:  'N/A',
+          FK_FinancialYear_ID: +fyId || 'N/A',
+          FK_WTT_Project_ID: +projectId || 'N/A',
+          // Include monthValues array
+          monthValues: [
+            { label: 'April', value:  0, commentValue:  '' },
+            { label: 'May', value:0, commentValue: ''},
+            { label: 'June', value:0, commentValue:  '' },
+            { label: 'July', value:  0, commentValue:  '' },
+            { label: 'August', value: 0, commentValue: ''},
+            { label: 'September', value:  0, commentValue:  ''},
+            { label: 'October', value:  0, commentValue: ''},
+            { label: 'November', value:  0, commentValue:  ''},
+            { label: 'December', value:  0, commentValue:  ''},
+            { label: 'January', value:  0, commentValue: ''},
+            { label: 'February', value: 0, commentValue: ''},
+            { label: 'March', value:  0, commentValue: ''},
+          ],
+        };
       }
       const totalMonthlyCost = parseInt(resources.monthlyCostComp1) + parseInt(resources.monthlyCostComp2) + parseInt(resources.monthlyCostComp3) + parseInt(resources.monthlyCostComp4);                      
            
@@ -76,7 +100,38 @@ const getAllResourceCostWithProjectId = async (req, res) => {
       });
       console.log(empAllocation, "empAllocation", fy.endDate, fy.startDate)
       if (!empAllocation)
-        return empAllocation;
+        return {
+          d:fy.startDate,
+          id: rc?.id || undefined,
+          employeeCode: employee.EmployeeCode,
+          employeeName: employee.FullName,
+          // Additional properties
+          joiningDate: formattedJoiningDate,
+          FK_WTT_Employee_ID: employee.id || 'N/A',
+          // Additional properties from your controller
+          createdAt: rc?.createdAt || 'N/A',
+          updatedAt: rc?.updatedAt || 'N/A',
+          sort: rc?.sort || 'N/A',
+          createdById: rc?.createdById || 'N/A',
+          updatedById: rc?.updatedById || 'N/A',
+          FK_FinancialYear_ID: +fyId || 'N/A',
+          FK_WTT_Project_ID: +projectId || 'N/A',
+          // Include monthValues array
+          monthValues: [
+            { label: 'April', value: rc?.april || 0, commentValue: rc?.aprilComment || '' },
+            { label: 'May', value: rc?.may || 0, commentValue: rc?.mayComment || ''},
+            { label: 'June', value: rc?.june || 0, commentValue: rc?.juneComment || '' },
+            { label: 'July', value: rc?.july || 0, commentValue: rc?.julyComment || '' },
+            { label: 'August', value: rc?.august || 0, commentValue: rc?.augustComment || ''},
+            { label: 'September', value: rc?.september || 0, commentValue: rc?.septemberComment || ''},
+            { label: 'October', value: rc?.october || 0, commentValue: rc?.octoberComment || ''},
+            { label: 'November', value: rc?.november || 0, commentValue: rc?.novemberComment || ''},
+            { label: 'December', value: rc?.december || 0, commentValue: rc?.decemberComment || ''},
+            { label: 'January', value: rc?.january || 0, commentValue: rc?.januaryComment || ''},
+            { label: 'February', value: rc?.february || 0, commentValue: rc?.februaryComment || ''},
+            { label: 'March', value: rc?.march || 0, commentValue: rc?.marchComment || ''},
+          ],
+        };
 
       const costToThisProject = (month, date) => {
         const year = date.getFullYear();
@@ -102,7 +157,7 @@ const getAllResourceCostWithProjectId = async (req, res) => {
       // ('rc.FK_WTT_Employee_ID:', rc.FK_WTT_Employee_ID);
 
       // Assume joiningDate is a Date object
-      const formattedJoiningDate = employee ? moment(employee.JoiningDate).format('DD/MM/YYYY') : 'N/A';
+     
 
       if (employee) {
         return {
@@ -123,8 +178,8 @@ const getAllResourceCostWithProjectId = async (req, res) => {
           sort: rc?.sort || 'N/A',
           createdById: rc?.createdById || 'N/A',
           updatedById: rc?.updatedById || 'N/A',
-          FK_FinancialYear_ID: rc?.FK_FinancialYear_ID || 'N/A',
-          FK_WTT_Project_ID: rc?.FK_WTT_Project_ID || 'N/A',
+          FK_FinancialYear_ID: +fyId|| 'N/A',
+          FK_WTT_Project_ID: +projectId || 'N/A',
           // Include monthValues array
           monthValues: [
             { label: 'April', value: rc?.april || costToThisProject(4, fy.startDate), commentValue: rc?.aprilComment || '' },
