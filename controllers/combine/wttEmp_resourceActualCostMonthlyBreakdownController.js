@@ -44,10 +44,11 @@ const getAllResourceCostWithProjectId = async (req, res) => {
        emp.fk_id = tempId;
     });
     const resourceCostActual = await resourceCostActualBreakdownByMonthController.getRecordByProjectId(projectId);
+    const emp =  await WTT_Employee.findAll();
     (resourceCostActual, "Data employees:");
     (employees, "employees: d");
-    const combinedData = [...employees]?.map((employee) => {
-      // const employee = empD.Employee;
+    const combinedData = [...employees]?.map((empD) => {
+      const employee =emp.find((e)=> e.id == empD.Employee);
       const formattedJoiningDate = employee ? moment(employee.JoiningDate).format('DD/MM/YYYY') : 'N/A';
       // Find the associated employee
       const resources = resourceCosts.find((rc) => rc?.FK_WTT_Employee_ID == employee.id);
