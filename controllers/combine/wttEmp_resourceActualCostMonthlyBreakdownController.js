@@ -239,10 +239,10 @@ const getAllResourceCostWithProjectId = async (req, res) => {
     const element = result[index];
     const data = output.find((out)=> out.FK_WTT_Employee_ID == element.FK_WTT_Employee_ID); 
     if(data){
-      data.monthValues = data.monthValues.map((d,i)=>{
-         d.value += parseInt(element.monthValues[i].value);
-         return d;
-      })
+      // data.monthValues = data.monthValues.map((d,i)=>{
+      //    d.value += parseInt(element.monthValues[i].value);
+      //    return d;
+      // })
     }else{
       output.push(element);
     }
