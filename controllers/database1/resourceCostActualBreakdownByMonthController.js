@@ -275,19 +275,59 @@ const uploadExcelForResourceCost = async (req, res) => {
 
     // Iterate through each item in the uploaded data
     for (const item of data) {
+      console.log(item);
       const emp = employees.find(emp => emp.id == item.EmployeeId);
       if (!emp) {
         console.error(`Employee not found for EmployeeId: ${item.EmployeeId}`);
         continue;
       }
-      const dataRec = await ResourceCostActualBreakdownByMonth.findOne({
+      let dataRec = await ResourceCostActualBreakdownByMonth.findOne({
         where:{
                FK_WTT_Employee_ID: emp.id,
           FK_FinancialYear_ID: item.FK_FinancialYear_ID,
           FK_WTT_Project_ID: item.FK_WTT_Project_ID
         }
       });
-      const obj = {
+
+        if (!dataRec) {
+          // Create a new record if no existing record was found
+          dataRec = await ResourceCostActualBreakdownByMonth.create({
+            FK_WTT_Employee_ID: emp.id,
+            FK_FinancialYear_ID: item.FK_FinancialYear_ID,
+            FK_WTT_Project_ID: item.FK_WTT_Project_ID,
+          april: item.April,
+          may: item.May,
+          june: item.June,
+          july: item.July,
+          august: item.August,
+          september: item.September,
+          october: item.October,
+          november: item.November,
+          december: item.December,
+          january: item.January,
+          february: item.February,
+          march: item.March,
+          aprilComment: item.AprilComment,
+          mayComment: item.MayComment,
+          juneComment: item.JuneComment,
+          julyComment: item.JulyComment,
+          augustComment: item.AugustComment,
+          septemberComment: item.SeptemberComment,
+          octoberComment: item.OctoberComment,
+          novemberComment: item.NovemberComment,
+          decemberComment: item.DecemberComment,
+          januaryComment: item.JanuaryComment,
+          februaryComment: item.FebruaryComment,
+          marchComment: item.MarchComment,
+          createdById: req.user.id,
+          updatedAt: new Date(),
+          createdAt: new Date()
+            // createdById: req.user.id
+          });
+     
+      
+      }else{
+        const obj = {
           FK_WTT_Employee_ID: emp.id,
           FK_FinancialYear_ID: item.FK_FinancialYear_ID,
           FK_WTT_Project_ID: item.FK_WTT_Project_ID,
@@ -322,15 +362,16 @@ const uploadExcelForResourceCost = async (req, res) => {
           dataRec[key] = obj[key];
         }
       await dataRec.save();
+      }
     
     }
-
-    return res.status(200).json({ message: 'Resource cost data updated successfully' });
+    return res.status(200).json(data);
   } catch (error) {
     console.error("Error during uploadExcelForResourceCost:", error.message);
     return res.status(500).json({ error: error.message });
   }
 };
+
 
 module.exports = {
   createRecord,
