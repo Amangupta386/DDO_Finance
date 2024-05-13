@@ -77,7 +77,7 @@ const getAllProjectsCostWithCorrespondingNames = async (req, res) => {
                               customerName: pData.client ? pData.client.name : 'N/A',
                               FK_WTT_Project_ID: +pData.id,
                               projectName: pData.name,
-                              forecast: forecastedRevenue ?? 0,
+                              forecast: forecastedRevenue || 0,
                               actual: 0,
                              projectStatus: pData.sowEndDate,
                             
