@@ -42,16 +42,21 @@ const getAllProjectResources = async (req, res) => {
 };
 
 // Get a list of all project resources
-const getAllAllocatedResources = async (startDateFilter, endDateFilter, res) => {
+const getAllAllocatedResources = async (startDateFilter, endDateFilter, res, isOnlyEndDateExp = false) => {
   try {
     const filter= {}; 
     if(+startDateFilter){
       const date = new Date(+startDateFilter); 
       date.setHours(0); 
       date.setMinutes(0);
+      if(isOnlyEndDateExp)
       filter.endDate = {
         [Op.gte]: date,
       } 
+      else
+      filter.startDate = {
+        [Op.gte]: date,
+      }
 
     }
     if(+endDateFilter){
@@ -61,6 +66,7 @@ const getAllAllocatedResources = async (startDateFilter, endDateFilter, res) => 
       filter.endDate = {
         [Op.lte]: date,
       } 
+      
     }else{
       filter.endDate = {
         [Op.gte]: new Date(),

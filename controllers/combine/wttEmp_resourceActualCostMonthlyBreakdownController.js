@@ -36,7 +36,7 @@ const getAllResourceCostWithProjectId = async (req, res) => {
       // };
     }
     const resourceCosts = await resourceCostController.getAllResourceCosts2();
-    const resourceAllocations =  (await wttProjectResourcesController.getAllAllocatedResources(fy.startDate.getTime(), fy.endDate.getTime(), res)).filter((f)=>f.FK_WTT_Project_ID == projectId);
+    const resourceAllocations =  (await wttProjectResourcesController.getAllAllocatedResources(fy.startDate.getTime(), fy.endDate.getTime(), res, true)).filter((f)=>f.FK_WTT_Project_ID == projectId);
         const employees = JSON.parse(JSON.stringify(resourceAllocations));
    
    
