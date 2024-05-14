@@ -78,7 +78,7 @@ const getAllAllocatedResourceCost = async (req, res) => {
               endDate: formattedEndDate,
               allocPercent: ar.allocPercent+'%',                
               allocatedDaysPercent: allocatedDaysPercent+'%',
-              resourceCost: 'N/A'
+              resourceCost: 0
             };
           }
         });
