@@ -61,7 +61,7 @@ const getAllResourceCostWithProjectId = async (req, res) => {
       }
       const formattedJoiningDate = employee ? moment(employee.JoiningDate).format('DD/MM/YYYY') : 'N/A';
       // Find the associated employee
-      const resources = resourceCosts.find((rc) => rc?.FK_WTT_Employee_ID == employee.id);
+      const resources = resourceCosts.find((rc) => rc?.FK_WTT_Employee_ID == employee.id && rc?.FK_FinancialYear_ID == fyId);
       if(!resources){
         return {
           d:fy.startDate,
