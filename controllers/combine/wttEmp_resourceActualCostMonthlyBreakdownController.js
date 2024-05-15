@@ -190,7 +190,7 @@ const getAllResourceCostWithProjectId = async (req, res) => {
           sort: rc?.sort || 'N/A',
           createdById: rc?.createdById || 'N/A',
           updatedById: rc?.updatedById || 'N/A',
-          FK_FinancialYear_ID: +fyId || 'N/A',
+          FK_FinancialYear_ID: rc?.FK_FinancialYear_ID || +fyId || 'N/A',
           FK_WTT_Project_ID: +projectId || 'N/A',
           // Include monthValues array
           monthValues: [
