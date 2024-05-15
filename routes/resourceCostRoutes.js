@@ -15,7 +15,8 @@ router.route('/')
     // Get All employee with cost
     // .get(resourceCostController.getAllResourceCosts);
     // Get All employee with cost and Name
-    .get(wttEmp_empCostController.getAllResourceCostWithNames);
+    .get(wttEmp_empCostController.getAllResourceCostWithNames)
+    .put(resourceCostController.updateResourceCost);
 
 router.route('/upload')
       .post(upload.single('file'),wttEmp_empCostController.uploadExcel);  
@@ -24,10 +25,9 @@ router.route('/:id')
     // Read one project by ID    
     .get(resourceCostController.getResourceCostById)
     // Update a project by ID
-    .put(resourceCostController.updateResourceCost);
+    // .put(resourceCostController.updateResourceCost);
     // Delete a project by ID
     // .delete(resourceCostController.deleteResourceCost);
-
 
 
 

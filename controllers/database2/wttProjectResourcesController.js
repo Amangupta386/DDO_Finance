@@ -63,9 +63,9 @@ const getAllAllocatedResources = async (startDateFilter, endDateFilter, res, isO
       const date = new Date(+endDateFilter); 
       date.setHours(0); 
       date.setMinutes(0);
-      filter.endDate = {
-        [Op.lte]: date,
-      } 
+      // filter.endDate = {
+      //   [Op.lte]: date,
+      // } 
       
     }else{
       filter.endDate = {
