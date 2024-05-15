@@ -70,7 +70,7 @@ exports.updateResourceCost = async (req, res) => {
     // Find the ResourceCost by ID and update it
     let resourceCost =  +req.query.id && await ResourceCost.findByPk(req.query.id);
     if (!resourceCost) {
-      resourceCost =  await resourceCost.create(req.body);
+      resourceCost =  await ResourceCost.create(req.body);
       return res.json(resourceCost);
     }
     await resourceCost.update(req.body);
