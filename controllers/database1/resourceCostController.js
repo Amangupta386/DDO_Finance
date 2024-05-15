@@ -68,7 +68,7 @@ exports.getResourceCostByEmployeeId = async (req, res) => {
 exports.updateResourceCost = async (req, res) => {
   try {
     // Find the ResourceCost by ID and update it
-    let resourceCost = await ResourceCost.findByPk(req.query.id);
+    let resourceCost =  +req.query.id && await ResourceCost.findByPk(req.query.id);
     if (!resourceCost) {
       resourceCost =  await resourceCost.create(req.body);
       return res.json(resourceCost);
