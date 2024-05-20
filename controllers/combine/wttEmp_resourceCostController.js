@@ -176,7 +176,10 @@ const getAllBenchAllocatedResourceCost = async (req, res) => {
         }
       }
 
-      return res.json(benchRes.filter((value)=>value.allocPercent < 100).map((value)=> 100 - value.allocPercent ));
+      return res.json(benchRes.filter((value)=>value.allocPercent < 100).map((value)=> {
+        value.allocPercent = 100 - value.allocPercent
+        return value;
+      } ));
   }   catch (error) {
       console.error(error);
       return res.status(500).json({ error: 'Server Error' });
