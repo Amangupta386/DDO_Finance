@@ -11,9 +11,7 @@ router.route('/')
     // Update a project
     .get(wttProjectResourcesController.getAllProjectResources);
     
-    router.route('/BenchResources')
-
-    .get(wttProjectResourcesController.getAllBenchResources);
+   
 
 router.route('/:id')
     // Read one project by ID    
