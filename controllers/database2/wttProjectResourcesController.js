@@ -1,6 +1,8 @@
 const { WTT_ProjectResources } = require('../../models/database2/wtt_projectresources');
 const { body, validationResult } = require('express-validator');
 const { Op } = require('sequelize');
+const { WTT_Employee } = require('../../models/database2/wtt_employee');
+const { WTTProject } = require('../../models/database2/wtt_project');
 
 // Validation rules for creating or updating a project resource
 const projectResourceValidationRules = [
@@ -150,6 +152,8 @@ const deleteProjectResource = async (req, res) => {
   }
 };
 
+
+
 module.exports = {
   projectResourceValidationRules,
   createProjectResource,
@@ -158,4 +162,5 @@ module.exports = {
   updateProjectResource,
   deleteProjectResource,
   getAllAllocatedResources
+  
 };

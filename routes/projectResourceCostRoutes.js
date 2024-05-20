@@ -8,6 +8,9 @@ router.route('/')
     // Get All Allocated Resouce COst
     .get(wttEmp_resourceCostController.getAllAllocatedResourceCost);
 
+    router.route('/Bench')
+    .get(wttEmp_resourceCostController.getAllBenchAllocatedResourceCost);
+
 router.route('/:id')
     // Read one project by ID    
     // .get(wttEmp_resourceCostController.getProjectResourceById)

@@ -9,7 +9,7 @@ const WTT_ProjectResources = sequelize2.define('WTT_ProjectResources', {
     createdById: DataTypes.BIGINT,
     updatedById: DataTypes.BIGINT,
     FK_WTT_Project_ID: DataTypes.BIGINT,
-    FK_WTT_Employee_ID: {type: DataTypes.BIGINT, references: WTT_Employee},
+    FK_WTT_Employee_ID: {type: DataTypes.BIGINT, references: {model:WTT_Employee}},
     startDate: DataTypes.DATE,
     endDate: DataTypes.DATE,
     allocPercent: DataTypes.BIGINT,
