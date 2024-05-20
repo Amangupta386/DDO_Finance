@@ -107,7 +107,7 @@ const getAllBenchAllocatedResourceCost = async (req, res) => {
           // Find the associated Customer Name with Project
           const customer = customers.find((c) => c.id === project.FK_WTT_Customer_ID);
 
-          const rm = employees.find((e) => e.id === employee.FK_reportingmngr_WTT_Employee_ID);
+          const rm = employees.find((e) => e.id === employee?.FK_reportingmngr_WTT_Employee_ID);
 
           
           // Assume startDate abd endDate is a Date object
