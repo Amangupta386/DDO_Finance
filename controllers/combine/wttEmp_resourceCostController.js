@@ -142,7 +142,7 @@ const getAllBenchAllocatedResourceCost = async (req, res) => {
               buName: project ? project.name : 'N/A',
               startDate: formattedStartDate,
               endDate: formattedEndDate,
-              allocPercent: ar.allocPercent+'%',
+              allocPercent: ar.allocPercent,
               allocatedDaysPercent: allocatedDaysPercent+'%',
               resourceCost: totalMonthlyCost
             };
@@ -158,7 +158,7 @@ const getAllBenchAllocatedResourceCost = async (req, res) => {
               buName: project ? project.name : 'N/A',
               startDate: formattedStartDate,
               endDate: formattedEndDate,
-              allocPercent: ar.allocPercent+'%',                
+              allocPercent: ar.allocPercent,                
               allocatedDaysPercent: allocatedDaysPercent+'%',
               resourceCost: 0
             };
@@ -170,13 +170,13 @@ const getAllBenchAllocatedResourceCost = async (req, res) => {
         const data = combinedData[i]; 
         const emp = benchRes.find((em)=> em.employeeId === data.employeeId); 
         if(emp){
-          emp.allocPercent =( +(data.allocPercent.replace("%","")) + (+emp.allocPercent.replace("%","")))+"%";
+          emp.allocPercent =( +(data.allocPercent) + (+emp.allocPercent));
         }else{
           benchRes.push(data);
         }
       }
 
-      return res.json(benchRes);
+      return res.json(benchRes.filter((value)=>value.allocPercent < 100));
   }   catch (error) {
       console.error(error);
       return res.status(500).json({ error: 'Server Error' });
