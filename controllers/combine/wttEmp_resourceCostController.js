@@ -106,6 +106,9 @@ const getAllBenchAllocatedResourceCost = async (req, res) => {
           const employee = employees.find((e) => e.id === ar.FK_WTT_Employee_ID);
           // Find the associated Customer Name with Project
           const customer = customers.find((c) => c.id === project.FK_WTT_Customer_ID);
+
+          const rm = employees.find((e) => e.id === employee.FK_reportingmngr_WTT_Employee_ID);
+
           
           // Assume startDate abd endDate is a Date object
           const formattedStartDate = moment(ar.startDate).format('DD/MM/YYYY');
@@ -132,13 +135,12 @@ const getAllBenchAllocatedResourceCost = async (req, res) => {
 
             
             return {
-              employee,
               id: ar.id,
               employeeId: ar.FK_WTT_Employee_ID,
               employeeCode: employee ? employee.EmployeeCode : 'N/A',
               employeeName: employee ? employee.FullName : 'N/A',  
-              rmId: employee ? employee.FK_reportingmngr_WTT_Employee_ID : 'N/A',          
-              rm: employee ? employee.FullName : 'N/A',     
+              rmId: rm ? rm.id : 'N/A',          
+              rm: rm ? rm.FullName : 'N/A',     
               buId: ar.FK_WTT_Project_ID,               
               buName: project ? project.name : 'N/A',
               startDate: formattedStartDate,
@@ -150,7 +152,6 @@ const getAllBenchAllocatedResourceCost = async (req, res) => {
           } else {
             return {
               id: ar.id,
-              employee,
               employeeId: employee ? employee.id : 'N/A',
               employeeCode: employee ? employee.EmployeeCode : 'N/A',
               employeeName: employee ? employee.FullName : 'N/A', 
