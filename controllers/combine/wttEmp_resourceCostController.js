@@ -170,13 +170,13 @@ const getAllBenchAllocatedResourceCost = async (req, res) => {
         const data = combinedData[i]; 
         const emp = benchRes.find((em)=> em.employeeId === data.employeeId); 
         if(emp){
-          emp.allocPercent = +(data.allocPercent.replace("%","")) + (+em.allocPercent.replace("%",""));
+          emp.allocPercent =( +(data.allocPercent.replace("%","")) + (+em.allocPercent.replace("%","")))+"%";
         }else{
           benchRes.push(data);
         }
       }
 
-      return res.json(combinedData);
+      return res.json(benchRes);
   }   catch (error) {
       console.error(error);
       return res.status(500).json({ error: 'Server Error' });
