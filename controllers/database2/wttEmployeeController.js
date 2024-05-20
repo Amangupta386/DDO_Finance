@@ -71,8 +71,6 @@ const getAllEmployees2 = async (req, res) => {
 const getAllEmployeesOnlyCodeName = async (req, res) => {
   try {
     const employees = await WTT_Employee.findAll({
-      attributes: ['id', 'EmployeeCode', 'FullName'],
-    },{
       where: {
         IsActive: 'true', 
       },
