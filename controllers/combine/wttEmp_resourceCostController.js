@@ -170,7 +170,7 @@ const getAllBenchAllocatedResourceCost = async (req, res) => {
         const data = combinedData[i]; 
         const emp = benchRes.find((em)=> em.employeeId === data.employeeId); 
         if(emp){
-          emp.allocPercent =( +(data.allocPercent.replace("%","")) + (+em.allocPercent.replace("%","")))+"%";
+          emp.allocPercent =( +(data.allocPercent.replace("%","")) + (+emp.allocPercent.replace("%","")))+"%";
         }else{
           benchRes.push(data);
         }
