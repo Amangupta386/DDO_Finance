@@ -149,6 +149,7 @@ const getAllBenchAllocatedResourceCost = async (req, res) => {
           } else {
             return {
               id: ar.id,
+              employee,
               employeeId: employee ? employee.id : 'N/A',
               employeeCode: employee ? employee.EmployeeCode : 'N/A',
               employeeName: employee ? employee.FullName : 'N/A', 
