@@ -136,8 +136,8 @@ const getAllBenchAllocatedResourceCost = async (req, res) => {
               employeeId: ar.FK_WTT_Employee_ID,
               employeeCode: employee ? employee.EmployeeCode : 'N/A',
               employeeName: employee ? employee.FullName : 'N/A',  
-              rmId: project ? project.FK_WTT_Customer_ID : 'N/A',          
-              rm: customer ? customer.name : 'N/A',     
+              rmId: employee ? employee.FK_reportingmngr_WTT_Employee_ID : 'N/A',          
+              rm: employee ? employee.FullName : 'N/A',     
               buId: ar.FK_WTT_Project_ID,               
               buName: project ? project.name : 'N/A',
               startDate: formattedStartDate,
@@ -152,8 +152,8 @@ const getAllBenchAllocatedResourceCost = async (req, res) => {
               employeeId: employee ? employee.id : 'N/A',
               employeeCode: employee ? employee.EmployeeCode : 'N/A',
               employeeName: employee ? employee.FullName : 'N/A', 
-              rmId: project ? project.FK_WTT_Customer_ID : 'N/A',          
-              rm: customer ? customer.name : 'N/A',
+              rmId: employee ? employee.FK_reportingmngr_WTT_Employee_ID : 'N/A',          
+              rm: employee ? employee.FullName : 'N/A', 
               buId: ar.FK_WTT_Project_ID,           
               buName: project ? project.name : 'N/A',
               startDate: formattedStartDate,
@@ -164,6 +164,18 @@ const getAllBenchAllocatedResourceCost = async (req, res) => {
             };
           }
         });
+      const benchRes = []; 
+
+      for(let i=0; i< combinedData.length; i++){
+        const data = combinedData[i]; 
+        const emp = benchRes.find((em)=> em.employeeId === data.employeeId); 
+        if(emp){
+          emp.allocPercent = +(data.allocPercent.replace("%","")) + (+em.allocPercent.replace("%",""));
+        }else{
+          benchRes.push(data);
+        }
+      }
+
       return res.json(combinedData);
   }   catch (error) {
       console.error(error);
